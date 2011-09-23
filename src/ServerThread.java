@@ -20,21 +20,28 @@ public class ServerThread extends Thread {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-        
-    public ServerThread(Socket socket) throws IOException{
+    private int client;
+    private ServerGame Game;
+    
+    public ServerThread(Socket socket, ServerGame Game) throws IOException{
         this.socket = socket;
         in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(this.socket
                 .getOutputStream())), true);
+        client = Game.addClient(new ClientSocket(socket, out));
+        this.Game = Game;
+        //client = ServerGame.addClient(new ClientSocket(socket, out));        
         start();
     }
     public void run(){
         try{
             while(true){
                 String command = in.readLine();
+                
                 if(command.equals("exit")){
                     break;
                 }
+                System.out.println(client);
                 System.out.println("Command " + command);
                 out.println(command);
             }
@@ -44,6 +51,7 @@ public class ServerThread extends Thread {
         }finally{
             try
             {
+                Game.removeClient(client);
                 this.socket.close();
             }
             catch (IOException e)

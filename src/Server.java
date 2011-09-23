@@ -22,11 +22,12 @@ public class Server {
         // TODO code application logic here
         ServerSocket SERVER = new ServerSocket(PORT);
         System.out.println("SERVER STARTED.....................");
+        ServerGame Game = new ServerGame();
         try {
             while(true){
                 Socket SOCKET = SERVER.accept();
                 try{
-                    new ServerThread(SOCKET);
+                    new ServerThread(SOCKET, Game);
                 } catch(IOException e) {
                     SOCKET.close();
                 }
