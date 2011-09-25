@@ -5,8 +5,6 @@
 
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  *
@@ -17,24 +15,15 @@ public class Server {
     /**
      * @param args the command line arguments
      */
-    static final int PORT = 5000;
+    static final int PORT_REQUEST = 5000;
+    static final int PORT_RESPONSE = 5050;
+    
     public static void main(String[] args) throws IOException {
         // TODO code application logic here
-        ServerSocket SERVER = new ServerSocket(PORT);
-        System.out.println("SERVER STARTED.....................");
-        ServerGame Game = new ServerGame();
-        try {
-            while(true){
-                Socket SOCKET = SERVER.accept();
-                try{
-                    new ServerThread(SOCKET, Game);
-                } catch(IOException e) {
-                    SOCKET.close();
-                }
-            }
-        } finally {
-            SERVER.close();
-            //кордлопрб
-        }
+        ServerRespons ServerRes = new ServerRespons(PORT_RESPONSE);
+        ServerRes.start();
+        ServerRequest ServerReq = new ServerRequest(PORT_REQUEST);
+        ServerReq.start();
+        
     }
 }
