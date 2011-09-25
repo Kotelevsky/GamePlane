@@ -22,11 +22,11 @@
 		public function main() {
 			// constructor code
 			try{
-				Security.loadPolicyFile("xmlsocket://localhost:5000");
+				Security.loadPolicyFile("xmlsocket://localhost:5050");
 			}catch(e: Event){
 				ObjText.text = e.type;
 			}
-			socket = new Socket("127.0.0.1",5000);
+			socket = new Socket("localhost",5000);
 			socket.addEventListener(Event.CONNECT, onConnectHandle);
 			socket.addEventListener(ProgressEvent.SOCKET_DATA, onDataHandle);
 			
@@ -53,7 +53,7 @@
 		
 		public function onTimer(e: TimerEvent): void{
 			i++;
-			//ObjText.text += e.toString() + " ";
+			ObjText.text += e.toString() + " ";
 			count.text = i.toString();
 			socket.writeUTFBytes("hsfjfsdhfjsdjfsdjfjshdfjshfjsjfh\n");
 			
