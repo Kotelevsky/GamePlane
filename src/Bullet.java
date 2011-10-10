@@ -15,16 +15,14 @@ public class Bullet extends FlyingObject{
     
     
     
-    public Bullet(int x, int y, int angle){
-        m_x = x;
-        m_y = y;
-        m_angle = angle;
+    public Bullet(int x, int y, Vector vector, Plane p){
+        super(x, y, vector);
+        m_plane = p;
     }
     
     @Override
     public void Compute(Event e){
-        m_x += m_x_velocity;
-        m_y += m_y_velocity;
+        
     }
     
 }

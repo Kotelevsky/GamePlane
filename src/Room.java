@@ -13,18 +13,24 @@ import java.util.List;
 public class Room {
     
     private int m_id;
-    private List<Player> m_players;
+    private List<FlyingObject> m_objects;
+    //private List<Player> m_players;
+    private int m_max_player_count;
+    
+    public Room(int max_players){   //to do: getting room id
+        m_max_player_count = max_players;
+    }
     
     public int getID(){
         return m_id;
     }
     
-    public List<Player> getPlayerList(){
-        return m_players;
+    public List<FlyingObject> getPlayerList(){
+        return m_objects;
     }
     
     public void GetPlayer(Player p){
-        m_players.add(p);
+        m_objects.add(p);
     }
     
     public void StartRoom(){

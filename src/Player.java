@@ -14,7 +14,7 @@ public class Player {
     private int m_id;
     private int m_score;
     private Room m_room;
-    private List<Plane> m_planes;
+    private Plane m_plane;
     private String m_name;
     
     public int getID(){
@@ -38,7 +38,6 @@ public class Player {
     
     public void NewFrag(Plane p){
         m_score++;
-        
     }
     
 }

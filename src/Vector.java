@@ -5,12 +5,17 @@
 package planegame;
 
 /**
- *
+ *  Vector specified for our game 
  * @author Vlad
  */
-public class Vector {
+public class Vector{
     private double m_x;
     private double m_y;
+    
+    public Vector(double x, double y){
+        m_x = x;
+        m_y = y;
+    }
     
     public double getX(){
         return m_x;
@@ -52,6 +57,10 @@ public class Vector {
         if(m_y == 0)
             return 0;
         return (m_y - Math.abs(m_y) < 0)?(-1):(1);
+    }
+    
+    public Vector Clone(){
+        return new Vector(m_x, m_y);
     }
     
 }
