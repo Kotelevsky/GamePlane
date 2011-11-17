@@ -17,11 +17,11 @@ public class Vector{
         m_y = y;
     }
     
-    public double getX(){
+    public double X(){
         return m_x;
     }
     
-    public double getY(){
+    public double Y(){
         return m_y;
     }
     
@@ -35,16 +35,6 @@ public class Vector{
     
     public double SLength(){
         return m_x*m_x + m_y*m_y;
-    }
-    
-    public void MinClockwiseRotation(){
-        m_x = m_x*Physics.COS_MIN_ROTATE_ANGLE - m_y*Physics.SIN_MIN_ROTATE_ANGLE;
-        m_y = m_x*Physics.SIN_MIN_ROTATE_ANGLE + m_y*Physics.COS_MIN_ROTATE_ANGLE;
-    }
-    
-    public void MinCounterClockwiseRotation(){
-        m_x = m_x*Physics.COS_MIN_ROTATE_ANGLE + m_y*Physics.SIN_MIN_ROTATE_ANGLE;
-        m_y = -m_x*Physics.SIN_MIN_ROTATE_ANGLE + m_y*Physics.COS_MIN_ROTATE_ANGLE;
     }
     
     public int XDirection(){  //направление по X
@@ -61,6 +51,16 @@ public class Vector{
     
     public Vector Clone(){
         return new Vector(m_x, m_y);
+    }
+    
+    public void ClockwiseRotation(double angle){
+        m_x = m_x*Math.cos(angle) - m_y*Math.sin(angle);
+        m_y = m_x*Math.sin(angle) + m_y*Math.cos(angle);
+    }
+    
+    public void CounterClockwiseRotation(double angle){
+        m_x = m_x*Math.cos(angle) + m_y*Math.sin(angle);
+        m_y = -m_x*Math.sin(angle) + m_y*Math.cos(angle);
     }
     
 }

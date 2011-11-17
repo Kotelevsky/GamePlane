@@ -10,22 +10,23 @@ package planegame;
  */
 public class Plane extends FlyingObject{
     
-    //private int m_weight; //I don't use weigth yet
-    private Player m_player;
-    private Room m_room;
-    private int m_id;
-    private int m_length;
-    private int m_height;
+    private Player m_player;                    //Игрок, управляющий самолетом
+    private Room m_room;                        //Комната в которой находится самолет
+    private int m_id;                           //идентификатор самолета в комнате
+    private int m_length;                       //длина самолета
+    private int m_height;                       //высота самолета
+    private int r;                              //радиус окружности оисаной вокруг самолета
     
     public Player getPlayer(){
         return m_player;
     }
     
-    public Plane(int x, int y, Vector v, Player p, Room r){
+    public Plane(int x, int y, Vector v, Player p, Room room){
         super(x, y, v);               
         m_player = p;
-        m_room = r;
+        m_room = room;
         m_id = m_player.getID();
+        r = (int)Math.sqrt(m_length*m_length/4 + m_height*m_height/4);
     }
     
     //метод Compute ведет пеесчет координат самолета по таймеру
@@ -38,16 +39,15 @@ public class Plane extends FlyingObject{
                 break;
             }
             case clockwiseRotate:{
-                m_vector.MinClockwiseRotation();
+                MinClockwiseRotation();
                 break;
-                
             }
             case counterClockwiseRotate:{
-                m_vector.MinCounterClockwiseRotation();
+                MinCounterClockwiseRotation();
                 break;
             }
             case fire:{
-                
+                new Bullet(m_x, m_y, m_velocity, this);
             }
             case slowdown:{
                 Slowdown();
@@ -60,8 +60,17 @@ public class Plane extends FlyingObject{
         }
     }
     
+    public Room getRoom(){
+        return m_room;
+    }
+    
+    public void ExitRoom(){
+        m_room = null;
+        m_player.Disconnect();
+    }
+    
     private void Bump(){
-        //to do
+        
     }    
     
     public void NewFrag(Plane p){

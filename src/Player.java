@@ -4,7 +4,6 @@
  */
 package planegame;
 
-import java.util.List;
 
 /**
  *
@@ -38,6 +37,10 @@ public class Player {
     
     public void NewFrag(Plane p){
         m_score++;
+    }
+    
+    public void Disconnect(){
+        
     }
     
 }
