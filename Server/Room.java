@@ -4,6 +4,7 @@
  */
 package planegame;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,11 +24,24 @@ public class Room {
     private int m_max_player_count;
     private Timer m_tmr;
     private ActionListener m_alistner;
+    private HashMap<Integer, Event> m_events;
     
-    public Room(int max_players, int id){   //to do: getting room id
+    public Room(int max_players, int id){   
         m_max_player_count = max_players;
         m_objects = new ArrayList<FlyingObject>();
-        
+        m_alistner = new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    GameTick();
+                }
+                catch(Exception ex){
+                    
+                }
+                //throw new UnsupportedOperationException("Not supported yet.");
+            }
+        };
         m_tmr = new Timer(5, m_alistner);
         m_id = id;
     }
@@ -40,8 +54,15 @@ public class Room {
         return m_objects;
     }
     
-    public void AddPlayer(Player p){
-        m_objects.add(p.Plane);
+    public boolean AddPlayer(Player p){
+        if(!(m_objects.size() == m_max_player_count)){
+            Plane plane = new Plane(0, 0, new Vector(1, 0), p, this);
+            p.setPlane(plane);
+            m_objects.add(p.getPlane());
+            return true;
+        }
+        else
+            return false;
     }
     
     public void StartRoom(){
@@ -55,24 +76,44 @@ public class Room {
         
     }
     
-    private void GameTick(HashMap<Integer, Event> events) throws Exception{
+    private void GameTick() throws Exception{
         for(FlyingObject f : m_objects){
-            Plane p = (Plane)f;
-            if(events.containsKey(p.getPlayer().getID()))
-                p.Compute(events.get(p.getPlayer().getID()));
-            else 
-                throw new Exception("Player doesn't exists");
+            if(f instanceof Plane){
+                Plane p = (Plane)f;
+                if(m_events.containsKey(p.getPlayer().getID()))
+                    p.Compute(m_events.get(p.getPlayer().getID()));
+                else 
+                    throw new Exception("Player doesn't exists");
+            }
+            else{
+                Bullet b = (Bullet)f;
+                b.Compute(null);
+            }
         }
+        SetDefaultEvents();
     }
  
-    private void DisconnectPlayer(int id){
+    public void DisconnectPlayer(int id){
         for(FlyingObject f : m_objects){
             Plane p = (Plane)f;
             if(p.getPlayer().getID() == id){
                 p.ExitRoom();
-                
             }
         }
+    }
+    
+    public void AddBullet(Bullet b){
+        m_objects.add(b);
+    }
+    
+    private void SetDefaultEvents(){
+        HashMap<Integer, Event> map = new HashMap<Integer, Event>();
+        for(FlyingObject f : m_objects){
+            if(f instanceof Plane){
+                map.put(((Plane)f).getPlayer().getID(), new Event(Event.PlaneEvents.none));
+            }
+        }
+        m_events = map;
     }
     
 }

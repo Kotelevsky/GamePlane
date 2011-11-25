@@ -9,7 +9,7 @@ package planegame;
  *
  * @author Vlad
  */
-public class FlyingObject {
+public abstract class FlyingObject {
     
     protected int m_x;                              // X coodrinate
     protected int m_y;                              //Y coordinate
@@ -49,65 +49,6 @@ public class FlyingObject {
      * Computes new game state. 
      * @param e player's event
      */
-    public void Compute(Event e){
-        Event.PlaneEvents event = e.getEvent();
-        switch(event){
-            case accelerate:{
-                Acceleration();
-                break;
-            }
-            case clockwiseRotate:{
-                MinClockwiseRotation();
-                break;
-            }
-            case counterClockwiseRotate:{
-                MinCounterClockwiseRotation();
-                break;
-            }
-            case fire:{
-                
-            }
-            case slowdown:{
-                Slowdown();
-                break;
-            }
-            case none:{
-                SimpleMotion();
-                break;
-            }
-        }
-    }
-    
-    protected void MinClockwiseRotation(){
-        m_draft.ClockwiseRotation(Physics.MIN_ROTATE_ANGLE);
-        SimpleMotion();
-    }
-    
-    protected void MinCounterClockwiseRotation(){
-        m_draft.CounterClockwiseRotation(Physics.MIN_ROTATE_ANGLE);
-        SimpleMotion();
-    }
-    
-    protected void Acceleration(){    //simple acceleration. Change coordinates and increase speed
-        m_draft.setX(m_draft.X() + Physics.ACCELERATION);
-        m_draft.setY(m_draft.Y() + Physics.ACCELERATION);
-        SimpleMotion();
-    }
-    
-    protected void Slowdown(){    //simple slowdown. Change coordinatees and decrease speed
-        m_draft.setX(m_draft.X() - Physics.ACCELERATION);
-        m_draft.setY(m_draft.Y() - Physics.ACCELERATION);
-        SimpleMotion();
-    }
-    
-    protected void SimpleMotion(){    //uniform motion along X and accelereted motion along Y
-        m_acceleration.setX((m_draft.X() + m_uplifting_force.X())/m_weight);
-        m_acceleration.setY((m_draft.Y() + m_uplifting_force.Y() + m_gravity.Y())/m_weight);
-        m_velocity.setX(m_velocity.X() + m_acceleration.X());
-        m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
-        m_x += m_velocity.X();
-        m_y += m_velocity.Y();
-        m_uplifting_force.setX(m_velocity.SLength()*m_draft.X()/m_draft.SLength());
-    }
+    public abstract void Compute(Event e);
     
 }

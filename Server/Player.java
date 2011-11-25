@@ -16,12 +16,25 @@ public class Player {
     private Plane m_plane;
     private String m_name;
     
+    public Player(int id, String name){
+        m_id = id;
+        m_name = name;
+    }
+    
     public int getID(){
         return m_id;
     }
     
     public int getScore(){
         return m_score;
+    }
+    
+    public Plane getPlane(){
+        return m_plane;
+    }
+    
+    public void setPlane(Plane p){
+        m_plane = p;
     }
     
     public String getName(){
@@ -31,7 +44,7 @@ public class Player {
     public void JoinRoom(Room r){
         if(m_room == null){
             m_room = r;
-            r.GetPlayer(this);
+            r.AddPlayer(this);
         }
     }
     
