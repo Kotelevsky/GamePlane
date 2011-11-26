@@ -5,28 +5,54 @@
 package planegame;
 
 /**
- *
- * @author Vlad
+ * The Plane class represents planes on the playing field.
+ * @author Vlad Zotov
  */
 public class Plane extends FlyingObject{
     
-    private Player m_player;                    //Игрок, управляющий самолетом
-    private Room m_room;                        //Комната в которой находится самолет
-    private int m_id;                           //идентификатор самолета в комнате
-    private int m_length;                       //длина самолета
-    private int m_height;                       //высота самолета
-    private int r;                              //радиус окружности оисаной вокруг самолета
+    /** Reference to player owner of the plane */
+    private Player m_player;                  
+    /** Reference to the Room in which plane is located */
+    private Room m_room;
+    /** Identifier of plane */
+    private int m_id;
+    private int m_length;
+    private int m_height;
+    /** Radius of the circle around plane*/
+    private int r;
+    /** Acceleration vector */
+    protected Vector m_acceleration;
+    /** Draft force vector */
+    protected Vector m_draft;
+    /** Uplifting force vector */
+    protected Vector m_uplifting_force;
+    /** Gravity vector */
+    protected Vector m_gravity;
+    /** Plane wright */
+    protected int m_weight;
     
     public Player getPlayer(){
         return m_player;
     }
     
+    /**
+     * Create new instance of Plane.
+     * @param x X coordinate of plane
+     * @param y Y coordinate of Plane
+     * @param v Motion Vector of plane
+     * @param p Player owner of plane
+     * @param room Room in which plane is located
+     */
     public Plane(int x, int y, Vector v, Player p, Room room){
         super(x, y, v);               
         m_player = p;
         m_room = room;
         m_id = m_player.getID();
         r = (int)Math.sqrt(m_length*m_length/4 + m_height*m_height/4);
+        m_acceleration = new Vector(0, 0);
+        m_draft = new Vector(0, 0);
+        m_uplifting_force = new Vector(0, 0);
+        m_gravity = new Vector(0, Physics.GRAVITY);
     }
     
     @Override

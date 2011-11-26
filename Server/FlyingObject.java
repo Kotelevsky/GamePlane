@@ -6,30 +6,37 @@ package planegame;
 
 
 /**
- *
+ * The abstract class for flying objects in game.
  * @author Vlad
  */
 public abstract class FlyingObject {
     
-    protected int m_x;                              // X coodrinate
-    protected int m_y;                              //Y coordinate
-    protected Vector m_velocity;                    //velocity vector
-    protected Vector m_acceleration;                //acceleration vector
-    protected Vector m_draft;                       //draft force vector
-    protected Vector m_uplifting_force;             //uplifting force vector
-    protected Vector m_gravity;                     //gravity vector
-    protected int m_weight;                         //plane weight
+    /** X coordinate */ 
+    protected int m_x;
+    /** Y coordinate */
+    protected int m_y;
+    /** Velocity vector aka motion vector */
+    protected Vector m_velocity;         
     
+    /** 
+     * 
+     * @return X coordinate
+     */
     public int getX(){
         return m_x;
     }
     
+    /**
+     * 
+     * @return Y coordinate
+     */
     public int getY(){
         return m_y; 
     }
+    
     /**
-     * Returns direction vector of FlyingObject
-     * @return 
+     * 
+     * @return motion vector of FlyingObject
      */
     public Vector getDirectionVector(){
         return m_velocity;
@@ -39,15 +46,12 @@ public abstract class FlyingObject {
         m_x = x;
         m_y = y;
         m_velocity = vec.Clone();
-        m_acceleration = new Vector(0, 0);
-        m_draft = new Vector(0, 0);
-        m_uplifting_force = new Vector(0, 0);
-        m_gravity = new Vector(0, Physics.GRAVITY);
+        
     }
     
     /**
-     * Computes new game state. 
-     * @param e player's event
+     * Computes new state of Flying object accordingly player's event. 
+     * @param e event posted by user
      */
     public abstract void Compute(Event e);
     

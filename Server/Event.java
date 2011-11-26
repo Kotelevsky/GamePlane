@@ -5,10 +5,11 @@
 package planegame;
 
 /**
- *
- * @author Vlad
+ * The Event class represents events that player able to send.
+ * @author Vlad Zotov
  */
 public class Event {
+    /** The available events  */
     public static enum PlaneEvents {accelerate, slowdown, clockwiseRotate, counterClockwiseRotate, fire , none};
     
     private PlaneEvents m_event;
