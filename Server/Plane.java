@@ -16,8 +16,8 @@ public class Plane extends FlyingObject{
     private Room m_room;
     /** Identifier of plane */
     private int m_id;
-    private int m_length;
-    private int m_height;
+    private int m_length = Physics.PLANE_WIDTH;
+    private int m_height = Physics.PLANE_HEIGT;
     /** Radius of the circle around plane*/
     private int r;
     /** Acceleration vector */
@@ -53,6 +53,7 @@ public class Plane extends FlyingObject{
         m_draft = new Vector(0, 0);
         m_uplifting_force = new Vector(0, 0);
         m_gravity = new Vector(0, Physics.GRAVITY);
+        m_weight = 1;
     }
     
     @Override
@@ -132,14 +133,14 @@ public class Plane extends FlyingObject{
     }
     
     private void Acceleration(){    //simple acceleration. Change coordinates and increase speed
-        m_draft.setX(m_draft.X() + Physics.ACCELERATION);
-        m_draft.setY(m_draft.Y() + Physics.ACCELERATION);
+        m_draft.setX(m_draft.X()*(1 + Physics.ACCELERATION/10));
+        m_draft.setY(m_draft.Y()*(1 + Physics.ACCELERATION/10));
         SimpleMotion();
     }
     
     private void Slowdown(){    //simple slowdown. Change coordinatees and decrease speed
-        m_draft.setX(m_draft.X() - Physics.ACCELERATION);
-        m_draft.setY(m_draft.Y() - Physics.ACCELERATION);
+        m_draft.setX(m_draft.X()*(1 - Physics.ACCELERATION/10));
+        m_draft.setY(m_draft.Y()*(1 - Physics.ACCELERATION/10));
         SimpleMotion();
     }
     
