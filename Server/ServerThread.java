@@ -1,3 +1,5 @@
+package planegame;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -29,13 +31,10 @@ public class ServerThread extends Thread {
         in = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
         out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(this.socket
                 .getOutputStream())), true);
-        
-        //readPolicyRequest();
-        
-        client = Game.addClient(new ClientSocket(socket, out));
+                
+        client = Game.addUser(new ClientSocket(socket, out));
         this.Game = Game;
-        //client = ServerGame.addClient(new ClientSocket(socket, out));        
-        
+       
     }
 
     public void run(){
@@ -48,9 +47,9 @@ public class ServerThread extends Thread {
                 if(command.equals("exit")){
                     break;
                 }
-                System.out.println(client);
-                System.out.println("Command " + command);
-                out.println(command);
+                //System.out.println(socket);
+                Game.Command(command, client);
+                out.println(command + "\n");
             }
             System.out.println("Closing...................");
         }catch(Exception e){

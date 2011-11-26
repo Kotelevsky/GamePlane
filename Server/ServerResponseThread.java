@@ -1,3 +1,5 @@
+package planegame;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,11 +25,10 @@ public class ServerResponseThread extends Thread{
         
     private final String POLICY_REQUEST = "<policy-file-request/>";
     private  String POLICY_XML =
-            "<?xml version=\"1.0\"?>"
-            + "<cross-domain-policy>"
-            + "<allow-access-from domain=\"*\" to-ports=\"*\" />"
-            + "</cross-domain-policy>";
-    
+            "<cross-domain-policy>"
+                +"<allow-access-from domain=\"*\" to-ports=\"*\"/>"
+            +"</cross-domain-policy>";
+
     
     public ServerResponseThread(Socket socket) throws IOException{
         this.socket = socket;
@@ -47,6 +48,7 @@ public class ServerResponseThread extends Thread{
         }finally{
             try
             {
+                //System.out.println("DMK");
                 //Game.removeClient(client);
                 this.socket.close();
             }
@@ -62,7 +64,7 @@ public class ServerResponseThread extends Thread{
                System.out.println("OK2");
                 String request = read();
                 System.out.println("client says '" + request + "'");
-                System.out.println(request.equals(POLICY_REQUEST));
+                System.out.println("flag "+request.equals(POLICY_REQUEST));
                 if (request.equals(POLICY_REQUEST)) {
                     System.out.println("OK");
                      writePolicy();
@@ -76,7 +78,7 @@ public class ServerResponseThread extends Thread{
     
     private void writePolicy() {
         try {
-            this.out.println(POLICY_XML + "\u0000");
+            this.out.print(POLICY_XML + "\u0000");
             this.out.close();
             System.out.println("policy sent to client");
         }
