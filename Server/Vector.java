@@ -5,7 +5,7 @@
 package planegame;
 
 /**
- *  Vector specified for our game 
+ *  Vector specified for the game 
  * @author Vlad
  */
 public class Vector{

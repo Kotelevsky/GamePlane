@@ -13,12 +13,14 @@ import javax.swing.Timer;
 //import java.util.Timer;
 
 /**
- *
- * @author Vlad
+ * The Room class represents playing field 
+ * @author Vlad Zotov
  */
 public class Room {
     
+    /** Identifier of room */
     private int m_id;
+    /** List of flying objects in room */
     private List<FlyingObject> m_objects;
     //private List<Player> m_players;
     private int m_max_player_count;
@@ -27,6 +29,11 @@ public class Room {
     private HashMap<Integer, Event> m_events;
     private String m_name;
     
+    /**
+     * Create instance of Room
+     * @param max_players maximum player count
+     * @param name room name
+     */
     public Room(int max_players, String name){
         m_name = name;
         m_max_player_count = max_players;
@@ -61,6 +68,11 @@ public class Room {
         return m_objects;
     }
     
+    /**
+     * Add player to the room
+     * @param p added player
+     * @return true if operation successful, false if not
+     */
     public boolean AddPlayer(Player p){
         if(!(m_objects.size() == m_max_player_count)){
             Plane plane = new Plane(0, 0, new Vector(1, 0), p, this);
@@ -83,6 +95,10 @@ public class Room {
         
     }
     
+    /**
+     * Recompute game state accordingly players's events
+     * @throws Exception 
+     */
     private void GameTick() throws Exception{
         for(FlyingObject f : m_objects){
             if(f instanceof Plane){

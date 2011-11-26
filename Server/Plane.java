@@ -70,7 +70,10 @@ public class Plane extends FlyingObject{
         return new Vector(m_velocity.X(), -m_velocity.Y());
     }
     
-    //метод Compute ведет пеесчет координат самолета по таймеру
+    /**
+     * Computes new state of Plane accordingly player event
+     * @param e player's event
+     */
     @Override
     public void Compute(Event e){
         Event.PlaneEvents event = e.getEvent();

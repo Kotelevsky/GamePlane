@@ -6,14 +6,20 @@ package planegame;
 
 
 /**
- *
- * @author Vlad
+ * Class Player represents player in game
+ * @author Vlad Zotov
  */
 public class Player {
+    
+    /** Identifier of player */
     private int m_id;
+    /** Player's score */
     private int m_score;
+    /** Reference to the Room in which player playing */
     private Room m_room;
+    /** Player's plane */
     private Plane m_plane;
+    /** Player's name */
     private String m_name;
     
     public Player(int id, String name){
@@ -48,10 +54,17 @@ public class Player {
         }
     }
     
+    /**
+     * Increace score of player
+     * @param p Plane killed by player 
+     */
     public void NewFrag(Plane p){
         m_score++;
     }
     
+    /**
+     * disconnects player from room
+     */
     public void Disconnect(){
         
     }
