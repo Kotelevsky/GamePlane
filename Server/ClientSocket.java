@@ -1,3 +1,5 @@
+package planegame;
+
 
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -15,6 +17,24 @@ public class ClientSocket {
     
     private Socket socket;
     private PrintWriter out;
+    private int id;
+    private String name;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
     
     public ClientSocket(Socket socket, PrintWriter out){
         this.socket = socket;

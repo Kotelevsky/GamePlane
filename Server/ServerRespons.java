@@ -1,3 +1,5 @@
+package planegame;
+
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -32,12 +34,12 @@ public class ServerRespons extends Thread{
                 try{
                     ServerResponseThread my = new ServerResponseThread(SOCKET);
                     my.start();
-                }  finally {
-                    SERVER.close();
+                }catch(IOException e){
+                    System.out.println(e);
                 }
             }
         }catch(Exception e){
-            System.out.println("Response = " + e.getMessage());
+            System.out.println("Response server " + e.getMessage());
         }
     }
     

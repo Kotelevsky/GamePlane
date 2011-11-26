@@ -25,8 +25,10 @@ public class Room {
     private Timer m_tmr;
     private ActionListener m_alistner;
     private HashMap<Integer, Event> m_events;
+    private String m_name;
     
-    public Room(int max_players, int id){   
+    public Room(int max_players, String name){
+        m_name = name;
         m_max_player_count = max_players;
         m_objects = new ArrayList<FlyingObject>();
         m_alistner = new ActionListener() {
@@ -43,12 +45,17 @@ public class Room {
             }
         };
         m_tmr = new Timer(5, m_alistner);
-        m_id = id;
+        //m_id = id;
     }
     
     public int getID(){
         return m_id;
     }
+    
+    public void setID(int id){
+        m_id = id;
+    }
+    
     
     public List<FlyingObject> getPlayerList(){
         return m_objects;
