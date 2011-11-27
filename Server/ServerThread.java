@@ -49,7 +49,7 @@ public class ServerThread extends Thread {
                 }
                 //System.out.println(socket);
                 Game.Command(command, client);
-                out.println(command + "\n");
+                //out.println(command + "\n");
             }
             System.out.println("Closing...................");
         }catch(Exception e){
@@ -57,7 +57,8 @@ public class ServerThread extends Thread {
         }finally{
             try
             {
-                Game.removeClient(client);
+                
+                //Game.removeClient(client);
                 this.socket.close();
             }
             catch (IOException e)
