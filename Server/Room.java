@@ -67,6 +67,24 @@ public class Room {
         return m_objects;
     }
     
+    public List<Bullet> getBullets(){
+        List<Bullet> bullets = new ArrayList<>();
+        for(FlyingObject f : m_objects){
+            if(f instanceof Bullet)
+                bullets.add((Bullet)f);
+        }
+        return bullets;
+    }
+    
+    public List<Plane> getPlanes(){
+        List<Plane> planes = new ArrayList<>();
+        for(FlyingObject f : m_objects){
+            if(f instanceof Plane)
+                planes.add((Plane)f);
+        }
+        return planes;
+    }
+    
     public String getName(){
         return m_name;
     }
