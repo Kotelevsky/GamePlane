@@ -57,6 +57,7 @@ public class ServerThread extends Thread {
         }finally{
             try
             {
+                
                 //Game.removeClient(client);
                 this.socket.close();
             }
