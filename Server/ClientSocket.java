@@ -18,6 +18,24 @@ public class ClientSocket {
     private Socket socket;
     private PrintWriter out;
     private int id;
+    private int idInRoom;
+    private int idRoom;
+
+    public void setIdRoom(int idRoom) {
+        this.idRoom = idRoom;
+    }
+
+    public int getIdRoom() {
+        return idRoom;
+    }
+
+    public void setIdInRoom(int idInRoom) {
+        this.idInRoom = idInRoom;
+    }
+
+    public int getIdInRoom() {
+        return idInRoom;
+    }
     private String name;
 
     public void setName(String name) {
