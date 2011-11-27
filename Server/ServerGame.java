@@ -120,8 +120,8 @@ public class ServerGame {
             coordinate.put("y", new Integer(plane.get(i).getY()));
             
             JSONObject move = new JSONObject();
-            move.put("x", new Integer(plane.get(i).getDirectionVector().XDirection()));
-            move.put("y", new Integer(plane.get(i).getDirectionVector().YDirection()));
+            move.put("x", new Integer((int)plane.get(i).getDirectionVector().X()));
+            move.put("y", new Integer((int)plane.get(i).getDirectionVector().Y()));
             planeOrder.put("coordinate", coordinate);
             planeOrder.put("move", move);
             planeOrder.put("flag", 1);
@@ -142,7 +142,7 @@ public class ServerGame {
             String packet = (String)jsonObject.get("packet");
             System.out.println(packet);
             if(packet != null){
-                switch (packet.toLowerCase()){
+                switch(packet.toLowerCase()){
                     case "connect_user":
                         //System.out.println(packet);
                         ConnectUser(jsonObject, idUser);
@@ -212,8 +212,8 @@ public class ServerGame {
         for(int i = 0; i < roomsGame.size(); i++) {
             JSONObject room = new JSONObject();
             int idRoom = roomsGame.get(i).getID();
-            String nameRoom = roomsGame.get(i).getM_name();
-            int count = roomsGame.get(i).getM_max_player_count();
+            String nameRoom = roomsGame.get(i).getName();
+            int count = roomsGame.get(i).getMaxPlayerCount();
             room.put("id_room", new Integer(idRoom));
             room.put("name", new String(nameRoom));
             room.put("count", new Integer(count));
