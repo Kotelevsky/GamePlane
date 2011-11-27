@@ -63,9 +63,16 @@ public class Room {
         m_id = id;
     }
     
-    
     public List<FlyingObject> getPlayerList(){
         return m_objects;
+    }
+    
+    public String getName(){
+        return m_name;
+    }
+    
+    public int getMaxPlayerCount(){
+        return m_max_player_count;
     }
     
     /**
@@ -95,6 +102,10 @@ public class Room {
         
     }
     
+    public void SendEvents(HashMap<Integer, Event> events){
+        m_events = events;
+    }
+    
     /**
      * Recompute game state accordingly players's events
      * @throws Exception 
@@ -105,7 +116,7 @@ public class Room {
                 Plane p = (Plane)f;
                 if(m_events.containsKey(p.getPlayer().getID()))
                     p.Compute(m_events.get(p.getPlayer().getID()));
-                else 
+                else
                     throw new Exception("Player doesn't exists");
             }
             else{

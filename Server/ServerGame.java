@@ -42,7 +42,6 @@ public class ServerGame {
         long count = (Long)obj.get("count");
         long idUser = (Long)obj.get("id_user");
         
-        //действие
         Room room = new Room((int)count, name);
         roomsGame.add(room);
         int index = roomsGame.indexOf(room);
@@ -92,6 +91,9 @@ public class ServerGame {
     public void addPlayer(int idRoom, int idUser) {
         Player player = new Player(idUser, Client.get(idUser).getName());
         roomsGame.get(idRoom).AddPlayer(player);
+        int idInRoom = roomsGame.get(idRoom).getPlayerList().indexOf(player);
+        Client.get(idUser).setIdInRoom(idInRoom);
+        Client.get(idUser).setIdRoom(idRoom);
     }    
     
     public void ActionServer(JSONObject obj) {
@@ -114,12 +116,12 @@ public class ServerGame {
             JSONObject planeOrder = new JSONObject();
             
             JSONObject coordinate = new JSONObject();
-            coordinate.put("x", new Integer(plane.get(i).m_x));
-            coordinate.put("y", new Integer(plane.get(i).m_y));
+            coordinate.put("x", new Integer(plane.get(i).getX()));
+            coordinate.put("y", new Integer(plane.get(i).getY()));
             
             JSONObject move = new JSONObject();
-            move.put("x", new Integer(plane.get(i).getDirectionVector().XDirection()));
-            move.put("y", new Integer(plane.get(i).getDirectionVector().YDirection()));
+            move.put("x", new Integer((int)plane.get(i).getDirectionVector().X()));
+            move.put("y", new Integer((int)plane.get(i).getDirectionVector().Y()));
             planeOrder.put("coordinate", coordinate);
             planeOrder.put("move", move);
             planeOrder.put("flag", 1);
@@ -157,13 +159,30 @@ public class ServerGame {
                         ActionServer(jsonObject);
                         break;
                     case "exit_client":
-                        System.out.println(packet);
+                        exitClient(jsonObject);
+                        break;
+                    case "all_room":
+                        GetAllRoom(idUser);
                         break;
                 }
             }
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void exitClient(JSONObject obj) {
+        long idUser = (Long)obj.get("id_user");
+        GetExitClient((int)idUser);
+        roomsGame.get(Client.get((int)idUser).
+                getIdRoom()).getPlayerList().set(Client.get((int)idUser).getIdInRoom(), null);
+    }
+    
+    public void GetExitClient(int idUser) {
+        JSONObject packet = new JSONObject();
+        packet.put("packet", "exit_client");
+        String jsonPacket = JSONValue.toJSONString(packet);
+        send(idUser, jsonPacket);
     }
     
     // Добавляем клинтов
@@ -182,6 +201,27 @@ public class ServerGame {
         String name = (String)obj.get("name");
         Client.get(idUser).setName(name);
         GetConnectUser(idUser);
+        //GetAllRoom(idUser);
+    }
+    
+    public void GetAllRoom(int idUser) {
+        JSONObject packet = new JSONObject();
+        packet.put("packet", "all_room");
+        JSONArray allRoom = new JSONArray();
+        for(int i = 0; i < roomsGame.size(); i++) {
+            JSONObject room = new JSONObject();
+            int idRoom = roomsGame.get(i).getID();
+            String nameRoom = roomsGame.get(i).getName();
+            int count = roomsGame.get(i).getMaxPlayerCount();
+            room.put("id_room", new Integer(idRoom));
+            room.put("name", new String(nameRoom));
+            room.put("count", new Integer(count));
+            room.put("curent", new Integer(0));
+            allRoom.add(room);
+        }
+        packet.put("room", allRoom);
+        String jsonPacket = JSONValue.toJSONString(packet);
+        send(idUser, jsonPacket);
     }
     
     public void GetConnectUser(int idUser) {

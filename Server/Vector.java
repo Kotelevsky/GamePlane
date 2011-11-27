@@ -37,16 +37,8 @@ public class Vector{
         return m_x*m_x + m_y*m_y;
     }
     
-    public int XDirection(){  //направление по X
-        if(m_x == 0)
-            return 0;
-        return (m_x - Math.abs(m_x) < 0)?(-1):(1);
-    }
-    
-    public int YDirection(){  //направление по Y
-        if(m_y == 0)
-            return 0;
-        return (m_y - Math.abs(m_y) < 0)?(-1):(1);
+    public double Length(){
+        return Math.sqrt(SLength());
     }
     
     public Vector Clone(){

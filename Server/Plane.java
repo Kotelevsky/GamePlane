@@ -30,6 +30,8 @@ public class Plane extends FlyingObject{
     protected Vector m_gravity;
     /** Plane wright */
     protected int m_weight;
+    /** Flag that determine alive plane or not  */
+    private boolean m_is_alive;
     
     public Player getPlayer(){
         return m_player;
@@ -54,6 +56,7 @@ public class Plane extends FlyingObject{
         m_uplifting_force = new Vector(0, 0);
         m_gravity = new Vector(0, Physics.GRAVITY);
         m_weight = 1;
+        m_is_alive = true;
     }
     
     @Override
@@ -78,6 +81,17 @@ public class Plane extends FlyingObject{
     @Override
     public void Compute(Event e){
         Event.PlaneEvents event = e.getEvent();
+        if(!m_is_alive){
+            m_x = Physics.PLANE_WIDTH;
+            m_y = Physics.PLANE_HEIGT;
+            m_acceleration.setX(0);
+            m_acceleration.setY(0);
+            m_draft.setX(0);
+            m_draft.setY(0);
+            m_uplifting_force.setY(0);
+            m_velocity.setX(0);
+            m_velocity.setY(0);
+        }
         switch(event){
             case accelerate:{
                 Acceleration();
@@ -151,7 +165,10 @@ public class Plane extends FlyingObject{
         m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
         m_x += m_velocity.X();
         m_y += m_velocity.Y();
-        m_uplifting_force.setX(m_velocity.SLength()*m_draft.X()/m_draft.SLength());
+        m_x = (m_x >= 0 )?(m_x):(Physics.MAX_X + m_x);
+        m_x = (m_x < Physics.MAX_X)?(m_x):(m_x - Physics.MAX_X);
+        
+        m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
     }
     
 }
