@@ -54,7 +54,7 @@ public class Plane extends FlyingObject{
         m_acceleration = new Vector(0, 0);
         m_draft = new Vector(0, 0);
         m_uplifting_force = new Vector(0, 0);
-        m_gravity = new Vector(0, Physics.GRAVITY);
+        m_gravity = new Vector(0, -Physics.GRAVITY);
         m_weight = 1;
         m_is_alive = true;
     }
