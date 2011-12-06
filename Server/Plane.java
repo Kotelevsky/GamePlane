@@ -4,6 +4,9 @@
  */
 package planegame;
 
+import java.util.HashMap;
+import java.util.Objects;
+
 /**
  * The Plane class represents planes on the playing field.
  * @author Vlad Zotov
@@ -25,7 +28,7 @@ public class Plane extends FlyingObject{
     /** Draft force vector */
     protected Vector m_draft;
     /** Uplifting force vector */
-    protected Vector m_uplifting_force;
+    //protected Vector m_uplifting_force;
     /** Gravity vector */
     protected Vector m_gravity;
     /** Plane wright */
@@ -53,7 +56,7 @@ public class Plane extends FlyingObject{
         r = (int)Math.sqrt(m_length*m_length/4 + m_height*m_height/4);
         m_acceleration = new Vector(0, 0);
         m_draft = new Vector(0, 0);
-        m_uplifting_force = new Vector(0, 0);
+//        m_uplifting_force = new Vector(0, 0);
         m_gravity = new Vector(0, -Physics.GRAVITY);
         m_weight = 1;
         m_is_alive = true;
@@ -74,45 +77,66 @@ public class Plane extends FlyingObject{
         return new Vector(m_velocity.X(), -m_velocity.Y());
     }
     
+    //@Override
+    public boolean equals(Object obj){
+        if(obj instanceof Plane){
+            Plane p = (Plane)obj;
+            /*if(obj == null)
+                return false;
+            if(obj == this)
+                return true;*/          
+            if(p.getX() == m_x && p.getY() == m_y /*&& p.getDirectionVector().X() == this.getDirectionVector().X() 
+                    && p.getDirectionVector().Y() == this.getDirectionVector().Y() && p.m_draft.X() == this.m_draft.X()
+                    && p.m_draft.Y() == this.m_draft.Y()*/)
+                return true;
+        }
+        else
+            return false;
+        return false;
+    }
+
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + this.m_x + this.m_y;
+        
+        return hash;
+    }
+   
+    
     /**
      * Computes new state of Plane accordingly player event
      * @param e player's event
      */
     @Override
-    public void Compute(Event e){
-        Event.PlaneEvents event = e.getEvent();
+    public void Compute(HashMap<Integer, Integer>  events){
         if(!m_is_alive){
-            m_x = Physics.PLANE_WIDTH;
-            m_y = Physics.PLANE_HEIGT;
-            m_acceleration.setX(0);
-            m_acceleration.setY(0);
-            m_draft.setX(0);
-            m_draft.setY(0);
-            m_uplifting_force.setY(0);
-            m_velocity.setX(0);
-            m_velocity.setY(0);
+           ResetPlane();
+           m_is_alive = !m_is_alive;
         }
+        int event = events.get(m_id);
+        
+        
         switch(event){
-            case accelerate:{
+            case 4:{
                 Acceleration();
                 break;
             }
-            case clockwiseRotate:{
+            case 1:{
                 MinClockwiseRotation();
                 break;
             }
-            case counterClockwiseRotate:{
+            case 2:{
                 MinCounterClockwiseRotation();
                 break;
             }
-            case fire:{
+            case 3:{
                 m_room.AddBullet(new Bullet(m_x, m_y, m_velocity, this));
             } 
-            case slowdown:{
+            case 5:{
                 Slowdown();
                 break;
             }
-            case none:{
+            case 0:{
                 SimpleMotion();
                 break;
             }
@@ -126,6 +150,18 @@ public class Plane extends FlyingObject{
     public void ExitRoom(){
         m_room = null;
         m_player.Disconnect();
+    }
+    
+    private void ResetPlane(){
+         m_x = Physics.PLANE_WIDTH;
+         m_y = Physics.PLANE_HEIGT;
+         m_acceleration.setX(0);
+         m_acceleration.setY(0);
+         m_draft.setX(0);
+         m_draft.setY(0);
+//       m_uplifting_force.setY(0);
+         m_velocity.setX(1);
+         m_velocity.setY(0);
     }
     
     private void Bump(){
@@ -159,8 +195,8 @@ public class Plane extends FlyingObject{
     }
     
     private void SimpleMotion(){    //uniform motion along X and accelereted motion along Y
-        m_acceleration.setX((m_draft.X() + m_uplifting_force.X())/m_weight);
-        m_acceleration.setY((m_draft.Y() + m_uplifting_force.Y() + m_gravity.Y())/m_weight);
+        m_acceleration.setX((m_draft.X() /*+ m_uplifting_force.X()*/)/m_weight);
+        m_acceleration.setY((m_draft.Y() /*+ m_uplifting_force.Y() */+ m_gravity.Y())/m_weight);
         m_velocity.setX(m_velocity.X() + m_acceleration.X());
         m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
         m_x += m_velocity.X();
@@ -168,7 +204,7 @@ public class Plane extends FlyingObject{
         m_x = (m_x >= 0 )?(m_x):(Physics.MAX_X + m_x);
         m_x = (m_x < Physics.MAX_X)?(m_x):(m_x - Physics.MAX_X);
         
-        m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
+        //m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
     }
     
 }

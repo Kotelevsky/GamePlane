@@ -66,7 +66,8 @@ public class Player {
      * disconnects player from room
      */
     public void Disconnect(){
-        
+       m_plane = null;
+       m_room = null;
     }
     
 }

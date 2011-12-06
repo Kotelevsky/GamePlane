@@ -4,6 +4,8 @@
  */
 package planegame;
 
+import java.util.HashMap;
+
 
 /**
  * The abstract class for flying objects in game.
@@ -53,6 +55,6 @@ public abstract class FlyingObject {
      * Computes new state of Flying object accordingly player's event. 
      * @param e event posted by user
      */
-    public abstract void Compute(Event e);
+    public abstract void Compute(HashMap<Integer, Integer> events);
     
 }

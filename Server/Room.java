@@ -117,7 +117,13 @@ public class Room {
     
     public void StopRoom(){
         m_tmr.stop();
-        
+        for(FlyingObject f : m_objects){
+            if(f instanceof Plane){
+                Plane p = (Plane)f;
+                p.ExitRoom();
+            }
+        }
+        m_objects.clear();
     }
     
     public void SendEvents(int pid, int event){
@@ -130,17 +136,7 @@ public class Room {
      */
     private void GameTick() throws Exception{
         for(FlyingObject f : m_objects){
-            if(f instanceof Plane){
-                Plane p = (Plane)f;
-                if(m_events.containsKey(p.getPlayer().getID()))
-                    p.Compute(m_events.get(p.getPlayer().getID()));
-                else
-                    throw new Exception("Player doesn't exists");
-            }
-            else{
-                Bullet b = (Bullet)f;
-                b.Compute(null);
-            }
+            f.Compute(m_events);
         }
         
         m_events = new HashMap<>();
@@ -148,9 +144,11 @@ public class Room {
  
     public void DisconnectPlayer(int id){
         for(FlyingObject f : m_objects){
-            Plane p = (Plane)f;
-            if(p.getPlayer().getID() == id){
-                p.ExitRoom();
+                if(f instanceof Plane){ 
+                    Plane p = (Plane)f;
+                if(p.getPlayer().getID() == id){
+                    p.ExitRoom();
+                }
             }
         }
     }
@@ -159,7 +157,7 @@ public class Room {
         m_objects.add(b);
     }
     
-    private void SetDefaultEvents(){
+    /*private void SetDefaultEvents(){
         HashMap<Integer, Event> map = new HashMap<Integer, Event>();
         for(FlyingObject f : m_objects){
             if(f instanceof Plane){
@@ -167,6 +165,6 @@ public class Room {
             }
         }
         m_events = map;
-    }
+    }*/
     
 }
