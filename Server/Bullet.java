@@ -4,6 +4,8 @@
  */
 package planegame;
 
+import java.util.HashMap;
+
 /**
  * The Bullet class represents bullets on the playing field.
  * @author Vlad Zotov
@@ -30,7 +32,7 @@ public class Bullet extends FlyingObject{
      * Computes new state of Bullet accordingly event
      * @param e The Event posted by user
      */
-    @Override
+    //@Override
     public void Compute(Event e){
         m_x += m_velocity.X();
         m_y += m_velocity.Y();
@@ -60,6 +62,11 @@ public class Bullet extends FlyingObject{
     @Override
     public Vector getDirectionVector(){
         return new Vector(m_velocity.X(), -m_velocity.Y());
+    }
+
+    @Override
+    public void Compute(HashMap<Integer, Integer> events) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }
