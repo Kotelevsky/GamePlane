@@ -17,41 +17,14 @@ public class ClientSocket {
     
     private Socket socket;
     private PrintWriter out;
-    private int id;
-    private int idInRoom;
-    private int idRoom;
+    private Player _player;
 
-    public void setIdRoom(int idRoom) {
-        this.idRoom = idRoom;
+    public void setPlayer(Player _player) {
+        this._player = _player;
     }
 
-    public int getIdRoom() {
-        return idRoom;
-    }
-
-    public void setIdInRoom(int idInRoom) {
-        this.idInRoom = idInRoom;
-    }
-
-    public int getIdInRoom() {
-        return idInRoom;
-    }
-    private String name;
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
+    public Player getPlayer() {
+        return _player;
     }
     
     public ClientSocket(Socket socket, PrintWriter out){

@@ -25,115 +25,64 @@ public class ServerGame {
     // Клиенты и их парметры для связи
     private List<ClientSocket> Client;
     private List<Room> roomsGame;
-    
+    private int randomIdUser = 1;
+    private int randomIdRoom = 1;
     
     public ServerGame(){
         Client = new LinkedList<ClientSocket>();
         roomsGame = new LinkedList<Room>();
     }
     
-    // Комнаты с игроками
-    
-    
-    //Создаем комнату и возвращаем клиенту id-room 
-    // если комнат нет или клиент хочет создать свою
-    public void CreateRoom(JSONObject obj){
-        String name = (String)obj.get("name");
-        long count = (Long)obj.get("count");
-        long idUser = (Long)obj.get("id_user");
-        
-        Room room = new Room((int)count, name);
-        roomsGame.add(room);
-        int index = roomsGame.indexOf(room);
-        roomsGame.get(index).setID(index);
-        
-        addPlayer(index, (int)idUser);
-        roomsGame.get(index).StartRoom();
-        GetPacketRoom((int)idUser, index);
-    }
-    
-    public void GetPacketRoom(int idPlane, int room){
-        
-        JSONObject coordinate = new JSONObject();
-        coordinate.put("x", new Integer(150));
-        coordinate.put("y", new Integer(140));
-        
-        JSONObject move = new JSONObject();
-        move.put("x", new Integer(160));
-        move.put("y", new Integer(200));
-        
-        JSONObject packet = new JSONObject();
-        packet.put("packet", "room");
-        packet.put("id_plane", new Integer(idPlane));
-        packet.put("coordinate", coordinate);
-        packet.put("move", move);
-        packet.put("room", new Integer(room));
-        
-        String jsonPacket = JSONValue.toJSONString(packet);
-        System.out.println(jsonPacket);
-        send(idPlane, jsonPacket);
-    }
-    
-    
     public void send(int idUser, String packet) {
-        Client.get(idUser).getOut().println(packet + "\n");
-    }
-        
-    public void ConnectRoom(JSONObject obj) {
-        long idRoom = (Long)obj.get("id_room");
-        long idUser = (Long)obj.get("id_user");
-        
-        addPlayer((int)idRoom, (int)idUser);
-        
-        GetPacketRoom((int)idRoom, (int)idUser);
+        Client.get(sendIdPlayer(idUser)).getOut().println(packet + "\n");
     }
     
-    public void addPlayer(int idRoom, int idUser) {
-        Player player = new Player(idUser, Client.get(idUser).getName());
-        roomsGame.get(idRoom).AddPlayer(player);
-        int idInRoom = roomsGame.get(idRoom).getPlayerList().indexOf(player);
-        Client.get(idUser).setIdInRoom(idInRoom);
-        Client.get(idUser).setIdRoom(idRoom);
-    }    
-    
-    public void ActionServer(JSONObject obj) {
-        long idRoom = (Long)obj.get("id_room");
-        long idUser = (Long)obj.get("id_user");
-        long action = (Long)obj.get("action");
-        
-        // action
-        
-        GetPacketActionClient((int)idUser, (int)idRoom);
-    }
-    
-    
-    public void GetPacketActionClient(int idUser, int idRoom) {
-        JSONObject packet = new JSONObject();
-        packet.put("packet", "action_client");
-        List<FlyingObject> plane = roomsGame.get(idRoom).getPlayerList();
-        JSONArray planePacket = new JSONArray();
-        for(int i = 0; i < plane.size(); i++) {
-            JSONObject planeOrder = new JSONObject();
-            
-            JSONObject coordinate = new JSONObject();
-            coordinate.put("x", new Integer(plane.get(i).getX()));
-            coordinate.put("y", new Integer(plane.get(i).getY()));
-            
-            JSONObject move = new JSONObject();
-            move.put("x", new Integer((int)plane.get(i).getDirectionVector().X()));
-            move.put("y", new Integer((int)plane.get(i).getDirectionVector().Y()));
-            planeOrder.put("coordinate", coordinate);
-            planeOrder.put("move", move);
-            planeOrder.put("flag", 1);
-            planeOrder.put("id_plane", 0);
-            planePacket.add(planeOrder);
+    public int sendIdPlayer(int id) {
+        ClientSocket player = null;
+        for(ClientSocket clientList: Client) {
+            if(clientList.getPlayer().getID() == id) {
+               player = clientList; 
+               break;
+            }
         }
-        packet.put("plane", planePacket);
-        String jsonPacket = JSONValue.toJSONString(packet);
-        send(idUser, jsonPacket);
+        return Client.indexOf(player);
     }
     
-    // Анализатор комманд от клиента
+    public Player sendPlayer(int id) {
+        Player player = null;
+        for(ClientSocket clientList: Client) {
+            if(clientList.getPlayer().getID() == id) {
+               player = clientList.getPlayer(); 
+            }
+        }
+        return player;
+    }
+    
+    public int sendIdRoom(int id) {
+        Room room = null;
+        for(Room roomList: roomsGame) {
+            if(roomList.getID() == id) {
+                room = roomList;
+            }
+        }
+        return roomsGame.indexOf(room);
+    }
+    
+    public Room sendRoom(int id) {
+        Room room = null;
+        for(Room roomList: roomsGame) {
+            if(roomList.getID() == id) {
+                room = roomList;
+            }
+        }
+        return room;
+    }
+    
+    /**
+     * Method parsing string and switch what is the packet
+     * @param str string packet
+     * @param idUser id user 
+     */
     public void Command(String str, int idUser){
         JSONParser parser = new JSONParser();
         try{
@@ -172,11 +121,138 @@ public class ServerGame {
         }
     }
     
+    
+    // Добавляем клинтов
+    public int addUser(ClientSocket client){
+        int result = randomIdUser;
+        client.setPlayer(new Player(result));
+        Client.add(client);
+        randomIdUser++;
+        return result;
+    }
+    
+    public void ConnectUser(JSONObject obj, int idUser) {
+        String name = (String)obj.get("name");
+        Client.get(sendIdPlayer(idUser)).getPlayer().setM_name(name);
+        GetConnectUser(idUser);
+    }
+    
+    public void GetConnectUser(int idUser) {
+        JSONObject packet = new JSONObject();
+        packet.put("packet", "connect_user");
+        packet.put("id_user", new Integer(idUser));
+        
+        String jsonPacket = JSONValue.toJSONString(packet);
+        send(idUser, jsonPacket);
+    }
+    
+    
+    
+    
+    
+    
+    //Создаем комнату и возвращаем клиенту id-room 
+    // если комнат нет или клиент хочет создать свою
+    public void CreateRoom(JSONObject obj){
+        String name = (String)obj.get("name");
+        long count = (Long)obj.get("count");
+        long idUser = (Long)obj.get("id_user");
+        
+        Room room = new Room((int)count, name);
+        room.setID(randomIdRoom);
+        Player player = sendPlayer((int)idUser);
+        player.JoinRoom(room);
+        roomsGame.add(room);
+        roomsGame.get(sendIdRoom(randomIdUser)).StartRoom();
+        
+        GetPacketRoom((int)idUser, randomIdRoom);
+    }
+    
+    public void GetPacketRoom(int idPlane, int room){
+        
+        JSONObject coordinate = new JSONObject();
+        coordinate.put("x", new Integer(0));
+        coordinate.put("y", new Integer(0));
+        
+        JSONObject move = new JSONObject();
+        move.put("x", new Integer(0));
+        move.put("y", new Integer(0));
+        
+        JSONObject packet = new JSONObject();
+        packet.put("packet", "room");
+        packet.put("id_plane", new Integer(idPlane));
+        packet.put("coordinate", coordinate);
+        packet.put("move", move);
+        packet.put("room", new Integer(room));
+        
+        String jsonPacket = JSONValue.toJSONString(packet);
+        System.out.println(jsonPacket);
+        send(idPlane, jsonPacket);
+    }
+        
+       
+    
+    
+    
+    
+    public void ConnectRoom(JSONObject obj) {
+        long idRoom = (Long)obj.get("id_room");
+        long idUser = (Long)obj.get("id_user");
+        
+        Room room = sendRoom((int)idRoom);
+        Player player = sendPlayer((int)idUser);
+        player.JoinRoom(room);
+          
+        GetPacketRoom((int)idRoom, (int)idUser);
+    }
+     
+    
+    
+    
+    
+    public void ActionServer(JSONObject obj) {
+        long idRoom = (Long)obj.get("id_room");
+        long idUser = (Long)obj.get("id_user");
+        long action = (Long)obj.get("action");
+        
+        // action
+        roomsGame.get(sendIdRoom((int)idRoom)).SendEvents((int)idUser, (int)action);
+        
+        GetPacketActionClient((int)idUser, (int)idRoom);
+    }
+     
+    public void GetPacketActionClient(int idUser, int idRoom) {
+        JSONObject packet = new JSONObject();
+        packet.put("packet", "action_client");
+        List<Plane> plane = roomsGame.get(sendIdRoom(idRoom)).getPlanes();
+        JSONArray planePacket = new JSONArray();
+        for(int i = 0; i < plane.size(); i++) {
+            JSONObject planeOrder = new JSONObject();
+            
+            JSONObject coordinate = new JSONObject();
+            coordinate.put("x", new Integer(plane.get(i).getX()));
+            coordinate.put("y", new Integer(plane.get(i).getY()));
+            
+            JSONObject move = new JSONObject();
+            move.put("x", new Integer((int)plane.get(i).getDirectionVector().X()));
+            move.put("y", new Integer((int)plane.get(i).getDirectionVector().Y()));
+            planeOrder.put("coordinate", coordinate);
+            planeOrder.put("move", move);
+            planeOrder.put("flag", 1);// спросить Влада
+            planeOrder.put("id_plane", new Integer(plane.get(i).getPlayer().getID()));
+            planePacket.add(planeOrder);
+        }
+        packet.put("plane", planePacket);
+        String jsonPacket = JSONValue.toJSONString(packet);
+        send(idUser, jsonPacket);
+    }
+    
+    
+    
     public void exitClient(JSONObject obj) {
         long idUser = (Long)obj.get("id_user");
         GetExitClient((int)idUser);
-        roomsGame.get(Client.get((int)idUser).
-                getIdRoom()).getPlayerList().set(Client.get((int)idUser).getIdInRoom(), null);
+        Client.get(sendIdPlayer((int)idUser)).getPlayer().getPlane().ExitRoom();
     }
     
     public void GetExitClient(int idUser) {
@@ -186,24 +262,8 @@ public class ServerGame {
         send(idUser, jsonPacket);
     }
     
-    // Добавляем клинтов
-    public int addUser(ClientSocket client){
-        int result = -1;
-        if(!Client.equals(client)){
-            if (Client.add(client)){
-                result = Client.indexOf(client);
-                Client.get(result).setId(result);
-            }
-        }
-        return result;
-    }
+     
     
-    public void ConnectUser(JSONObject obj, int idUser) {
-        String name = (String)obj.get("name");
-        Client.get(idUser).setName(name);
-        GetConnectUser(idUser);
-        //GetAllRoom(idUser);
-    }
     
     public void GetAllRoom(int idUser) {
         JSONObject packet = new JSONObject();
@@ -217,7 +277,7 @@ public class ServerGame {
             room.put("id_room", new Integer(idRoom));
             room.put("name", new String(nameRoom));
             room.put("count", new Integer(count));
-            room.put("curent", new Integer(0));
+            room.put("curent", new Integer(roomsGame.get(i).getPlanes().size()));
             allRoom.add(room);
         }
         packet.put("room", allRoom);
@@ -225,14 +285,7 @@ public class ServerGame {
         send(idUser, jsonPacket);
     }
     
-    public void GetConnectUser(int idUser) {
-        JSONObject packet = new JSONObject();
-        packet.put("packet", "connect_user");
-        packet.put("id_user", new Integer(idUser));
-        
-        String jsonPacket = JSONValue.toJSONString(packet);
-        send(idUser, jsonPacket);
-    }
+    
     
     // Удаляем клинта
     public void removeClient(int client){

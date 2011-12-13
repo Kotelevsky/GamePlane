@@ -21,10 +21,13 @@ public class Player {
     private Plane m_plane;
     /** Player's name */
     private String m_name;
+
+    public void setM_name(String m_name) {
+        this.m_name = m_name;
+    }
     
-    public Player(int id, String name){
+    public Player(int id){
         m_id = id;
-        m_name = name;
     }
     
     public int getID(){
