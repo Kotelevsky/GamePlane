@@ -13,10 +13,8 @@ import java.util.HashMap;
  */
 public abstract class FlyingObject {
     
-    /** X coordinate */ 
-    protected int m_x;
-    /** Y coordinate */
-    protected int m_y;
+    /** Coordinates of plane */ 
+    protected Point m_coordinates;
     /** Velocity vector aka motion vector */
     protected Vector m_velocity;         
     
@@ -24,16 +22,8 @@ public abstract class FlyingObject {
      * 
      * @return X coordinate
      */
-    public int getX(){
-        return m_x;
-    }
-    
-    /**
-     * 
-     * @return Y coordinate
-     */
-    public int getY(){
-        return m_y; 
+    public Point getCoordinates(){
+        return m_coordinates;
     }
     
     /**
@@ -45,8 +35,7 @@ public abstract class FlyingObject {
     }
     
     public FlyingObject(int x, int y, Vector vec){
-        m_x = x;
-        m_y = y;
+        m_coordinates = new Point(x, y);
         m_velocity = vec.Clone();
         
     }

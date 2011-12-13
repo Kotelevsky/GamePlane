@@ -33,6 +33,10 @@ public class Vector{
         m_y = y;
     }
     
+    public Vector getUnitVector(){
+        return new Vector(m_x/this.Length(), m_y/this.Length());
+    }
+    
     public double SLength(){
         return m_x*m_x + m_y*m_y;
     }

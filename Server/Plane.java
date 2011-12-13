@@ -4,8 +4,9 @@
  */
 package planegame;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * The Plane class represents planes on the playing field.
@@ -22,7 +23,7 @@ public class Plane extends FlyingObject{
     private int m_length = Physics.PLANE_WIDTH;
     private int m_height = Physics.PLANE_HEIGT;
     /** Radius of the circle around plane*/
-    private int r;
+    private int m_r;
     /** Acceleration vector */
     protected Vector m_acceleration;
     /** Draft force vector */
@@ -53,7 +54,7 @@ public class Plane extends FlyingObject{
         m_player = p;
         m_room = room;
         m_id = m_player.getID();
-        r = (int)Math.sqrt(m_length*m_length/4 + m_height*m_height/4);
+        m_r = (int)Math.sqrt(m_length*m_length/4 + m_height*m_height/4);
         m_acceleration = new Vector(0, 0);
         m_draft = new Vector(0, 0);
 //        m_uplifting_force = new Vector(0, 0);
@@ -62,14 +63,20 @@ public class Plane extends FlyingObject{
         m_is_alive = true;
     }
     
-    @Override
     public int getX(){
-        return m_x;
+        return m_coordinates.getX();
     }
     
-    @Override
     public int getY(){
-        return Physics.MAX_Y - m_y;
+        return Physics.MAX_Y - m_coordinates.getY();
+    }
+    
+    public Point getCoordinates(){
+        return m_coordinates;
+    }
+    
+    public boolean IsAlive(){
+        return m_is_alive;
     }
     
     @Override
@@ -85,7 +92,7 @@ public class Plane extends FlyingObject{
                 return false;
             if(obj == this)
                 return true;*/          
-            if(p.getX() == m_x && p.getY() == m_y /*&& p.getDirectionVector().X() == this.getDirectionVector().X() 
+            if(p.getX() == m_coordinates.getX() && p.getY() == m_coordinates.getY() /*&& p.getDirectionVector().X() == this.getDirectionVector().X() 
                     && p.getDirectionVector().Y() == this.getDirectionVector().Y() && p.m_draft.X() == this.m_draft.X()
                     && p.m_draft.Y() == this.m_draft.Y()*/)
                 return true;
@@ -97,12 +104,11 @@ public class Plane extends FlyingObject{
 
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + this.m_x + this.m_y;
+        hash = 83 * hash + this.m_coordinates.getX() + this.m_coordinates.getY() + (int)this.m_velocity.X()*hash + (int)this.m_velocity.Y()*hash;
         
         return hash;
     }
-   
-    
+        
     /**
      * Computes new state of Plane accordingly player event
      * @param e player's event
@@ -114,8 +120,7 @@ public class Plane extends FlyingObject{
            m_is_alive = !m_is_alive;
         }
         int event = events.get(m_id);
-        
-        
+                
         switch(event){
             case 4:{
                 Acceleration();
@@ -130,7 +135,7 @@ public class Plane extends FlyingObject{
                 break;
             }
             case 3:{
-                m_room.AddBullet(new Bullet(m_x, m_y, m_velocity, this));
+                m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), m_velocity, this));
             } 
             case 5:{
                 Slowdown();
@@ -141,6 +146,8 @@ public class Plane extends FlyingObject{
                 break;
             }
         }
+        if(Bump())
+            m_is_alive = false;
     }
     
     public Room getRoom(){
@@ -153,8 +160,7 @@ public class Plane extends FlyingObject{
     }
     
     private void ResetPlane(){
-         m_x = Physics.PLANE_WIDTH;
-         m_y = Physics.PLANE_HEIGT;
+         m_coordinates = new Point(Physics.PLANE_WIDTH, Physics.PLANE_HEIGT);
          m_acceleration.setX(0);
          m_acceleration.setY(0);
          m_draft.setX(0);
@@ -164,9 +170,46 @@ public class Plane extends FlyingObject{
          m_velocity.setY(0);
     }
     
-    private void Bump(){
-        
-    }    
+    private boolean IsIntercept(Interval i1, Interval i2){
+        return true;
+    }
+    
+    private List<Interval> GetSides(Vector v, Point x){
+        Vector unit_v = m_velocity.getUnitVector();
+        Vector perp_one = new Vector(unit_v.Y() , -unit_v.X()); 
+        Point O1 = new Point(m_coordinates.getX() + (int)(unit_v.X()*0.5*Physics.PLANE_WIDTH), m_coordinates.getY() + (int)(0.5*Physics.PLANE_WIDTH*unit_v.Y()));
+        Point C = new Point(O1.getX() + (int)(0.5*Physics.PLANE_HEIGT*perp_one.X()), O1.getY() + (int)(0.5*Physics.PLANE_HEIGT*perp_one.Y()));
+        Point D = new Point(O1.getX() + (int)(-0.5*Physics.PLANE_HEIGT*perp_one.X()), O1.getY() + (int)(-0.5*Physics.PLANE_HEIGT*perp_one.Y()));
+        unit_v.setX(-unit_v.X());
+        unit_v.setY(-unit_v.Y());
+        Point O2 = new Point(m_coordinates.getX() + (int)(-0.5*Physics.PLANE_WIDTH*unit_v.X()), m_coordinates.getY() + (int)(-0.5*Physics.PLANE_WIDTH*unit_v.Y()));
+        Point B = new Point(O2.getX() + (int)(0.5*Physics.PLANE_HEIGT*perp_one.X()), O2.getY() + (int)(0.5*Physics.PLANE_HEIGT*perp_one.Y()));
+        Point A = new Point(O1.getX() + (int)(-0.5*Physics.PLANE_HEIGT*perp_one.X()), O1.getY() + (int)(-0.5*Physics.PLANE_HEIGT*perp_one.Y()));
+        List<Interval> sides = new ArrayList<>();
+        sides.add(new Interval(A, B));
+        sides.add(new Interval(B, C));
+        sides.add(new Interval(C, D));
+        sides.add(new Interval(D, A));
+        return sides;
+    }
+    
+    private boolean Bump(){
+        for(Plane p : m_room.getPlanes()){
+            if(Math.sqrt((this.getX() - p.getX())*(this.getX() - p.getX()) + (this.getY() - p.getY())*(this.getY() - p.getY())) <= m_r ){
+                List<Interval> my_sides = GetSides(m_velocity, m_coordinates);
+                List<Interval> enemy_sides = GetSides(p.getDirectionVector(),p.getCoordinates());
+                for(Interval my : my_sides){
+                    for(Interval en : enemy_sides){
+                        boolean f = IsIntercept(my, en);
+                        if(f)
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+        return false;
+    }
     
     public void NewFrag(Plane p){
         m_player.NewFrag(p);
@@ -199,11 +242,11 @@ public class Plane extends FlyingObject{
         m_acceleration.setY((m_draft.Y() /*+ m_uplifting_force.Y() */+ m_gravity.Y())/m_weight);
         m_velocity.setX(m_velocity.X() + m_acceleration.X());
         m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
-        m_x += m_velocity.X();
-        m_y += m_velocity.Y();
-        m_x = (m_x >= 0 )?(m_x):(Physics.MAX_X + m_x);
-        m_x = (m_x < Physics.MAX_X)?(m_x):(m_x - Physics.MAX_X);
-        
+        m_coordinates.setX(m_coordinates.getX() + (int)m_velocity.X());
+        m_coordinates.setY(m_coordinates.getY() + (int)m_velocity.Y());
+        m_coordinates.setX((m_coordinates.getX() >= 0 )?(m_coordinates.getX()):(Physics.MAX_X + m_coordinates.getX()));
+        m_coordinates.setX((m_coordinates.getX() < Physics.MAX_X)?(m_coordinates.getX()):(m_coordinates.getX() - Physics.MAX_X));
+                
         //m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
     }
     

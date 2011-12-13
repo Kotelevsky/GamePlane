@@ -4,6 +4,8 @@
  */
 package planegame;
 
+import java.util.HashMap;
+
 /**
  * The Bullet class represents bullets on the playing field.
  * @author Vlad Zotov
@@ -31,26 +33,26 @@ public class Bullet extends FlyingObject{
      * @param e The Event posted by user
      */
     @Override
-    public void Compute(Event e){
-        m_x += m_velocity.X();
-        m_y += m_velocity.Y();
+    public void Compute(HashMap<Integer, Integer>  events){
+        m_coordinates.setX(m_coordinates.getX() + (int)m_velocity.X());
+        m_coordinates.setY(m_coordinates.getY() + (int)m_velocity.Y());
     }
     /**
      * 
      * @return The X coordinate of bullet.
      */
-    @Override
+    
     public int getX(){
-        return m_x;
+        return m_coordinates.getX();
     }
     
     /**
      * 
      * @return The Y coordinate of bullet.
      */
-    @Override
+    
     public int getY(){
-        return Physics.MAX_Y - m_y;
+        return Physics.MAX_Y - m_coordinates.getY();
     }
     
     /**
