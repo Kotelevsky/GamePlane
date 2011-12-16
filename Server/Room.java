@@ -26,7 +26,7 @@ public class Room {
     private int m_max_player_count;
     private Timer m_tmr;
     private ActionListener m_alistner;
-    private HashMap<Integer, Integer> m_events;
+    private HashMap<Integer, Integer> m_events = new HashMap<Integer, Integer>();
     private String m_name;
     
     /**
@@ -127,7 +127,9 @@ public class Room {
     }
     
     public void SendEvents(int pid, int event){
-        m_events.put(pid, event);
+        
+            m_events.put(pid, event);
+        
     }
     
     /**

@@ -97,7 +97,7 @@ public class ServerGame {
                         ConnectUser(jsonObject, idUser);
                         break;
                     case "create_room":
-                        ///System.out.println(packet);
+                        //System.out.println(packet);
                         CreateRoom(jsonObject);
                         break;
                     case "connect_room":
@@ -163,9 +163,10 @@ public class ServerGame {
         Player player = sendPlayer((int)idUser);
         player.JoinRoom(room);
         roomsGame.add(room);
-        roomsGame.get(sendIdRoom(randomIdUser)).StartRoom();
+        roomsGame.get(sendIdRoom(randomIdRoom)).StartRoom();
         
         GetPacketRoom((int)idUser, randomIdRoom);
+        randomIdRoom++;
     }
     
     public void GetPacketRoom(int idPlane, int room){
@@ -289,6 +290,6 @@ public class ServerGame {
     
     // Удаляем клинта
     public void removeClient(int client){
-        Client.remove(client);
+        Client.remove(sendIdPlayer(client));
     }
 }
