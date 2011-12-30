@@ -26,7 +26,7 @@ public class Room {
     private int m_max_player_count;
     private Timer m_tmr;
     private ActionListener m_alistner;
-    private HashMap<Integer, Integer> m_events = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> m_events;
     private String m_name;
     
     /**
@@ -38,6 +38,7 @@ public class Room {
         m_name = name;
         m_max_player_count = max_players;
         m_objects = new ArrayList<FlyingObject>();
+        m_events = new HashMap<Integer, Integer>();
         m_alistner = new ActionListener() {
 
             @Override
@@ -100,7 +101,7 @@ public class Room {
      */
     public boolean AddPlayer(Player p){
         if(!(m_objects.size() == m_max_player_count)){
-            Plane plane = new Plane(0, 0, new Vector(1, 0), p, this);
+            Plane plane = new Plane(0, 0, new Vector(0, 0), p, this); //поставить тройку
             p.setPlane(plane);
             m_objects.add(p.getPlane());
             return true;

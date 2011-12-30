@@ -9,27 +9,27 @@ package planegame;
  * @author Vlad
  */
 public class Vector{
-    private double m_x;
-    private double m_y;
+    private float m_x;
+    private float m_y;
     
-    public Vector(double x, double y){
+    public Vector(float x, float y){
         m_x = x;
         m_y = y;
     }
     
-    public double X(){
+    public float X(){
         return m_x;
     }
     
-    public double Y(){
+    public float Y(){
         return m_y;
     }
     
-    public void setX(double x){
+    public void setX(float x){
         m_x = x;
     }
     
-    public void setY(double y){
+    public void setY(float y){
         m_y = y;
     }
     
@@ -37,12 +37,12 @@ public class Vector{
         return new Vector(m_x/this.Length(), m_y/this.Length());
     }
     
-    public double SLength(){
+    public float SLength(){
         return m_x*m_x + m_y*m_y;
     }
     
-    public double Length(){
-        return Math.sqrt(SLength());
+    public float Length(){
+        return (float)Math.sqrt(SLength());
     }
     
     public Vector Clone(){
@@ -50,13 +50,13 @@ public class Vector{
     }
     
     public void ClockwiseRotation(double angle){
-        m_x = m_x*Math.cos(angle) - m_y*Math.sin(angle);
-        m_y = m_x*Math.sin(angle) + m_y*Math.cos(angle);
+        m_x = (float) (m_x*Math.cos(angle) - m_y*Math.sin(angle));
+        m_y = (float) (m_x*Math.sin(angle) + m_y*Math.cos(angle));
     }
     
     public void CounterClockwiseRotation(double angle){
-        m_x = m_x*Math.cos(angle) + m_y*Math.sin(angle);
-        m_y = -m_x*Math.sin(angle) + m_y*Math.cos(angle);
+        m_x = (float) (m_x*Math.cos(angle) + m_y*Math.sin(angle));
+        m_y = (float) (-m_x*Math.sin(angle) + m_y*Math.cos(angle));
     }
     
 }

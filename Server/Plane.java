@@ -58,7 +58,7 @@ public class Plane extends FlyingObject{
         m_acceleration = new Vector(0, 0);
         m_draft = new Vector(0, 0);
 //        m_uplifting_force = new Vector(0, 0);
-        m_gravity = new Vector(0, -Physics.GRAVITY);
+        m_gravity = new Vector(0, 0);
         m_weight = 1;
         m_is_alive = true;
     }
@@ -123,14 +123,17 @@ public class Plane extends FlyingObject{
                 
         switch(event){
             case 4:{
+                System.out.println("acceleration");
                 Acceleration();
                 break;
             }
             case 1:{
+                System.out.println("Clockwise");
                 MinClockwiseRotation();
                 break;
             }
             case 2:{
+                System.out.println("CounterClockwise");
                 MinCounterClockwiseRotation();
                 break;
             }
@@ -138,16 +141,21 @@ public class Plane extends FlyingObject{
                 m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), m_velocity, this));
             } 
             case 5:{
+                System.out.println("slowdown");
                 Slowdown();
                 break;
             }
             case 0:{
+                System.out.println("simple motion");
                 SimpleMotion();
                 break;
             }
         }
-        if(Bump())
-            m_is_alive = false;
+        System.out.println("Event = " + event + " x = " + this.getX() + " y = " + this.getY() + " DraftX = " + this.m_draft.X() + 
+                " DraftY = " +  this.m_draft.Y() + " AccX = " + this.m_acceleration.X() + " AccY = " + this.m_acceleration.Y() + 
+                " velocityX = " + this.m_velocity.X() + " velocityY + " + this.m_velocity.Y());
+        //if(Bump())
+        //    m_is_alive = false;
     }
     
     public Room getRoom(){
@@ -216,37 +224,55 @@ public class Plane extends FlyingObject{
     }
     
     private void MinClockwiseRotation(){
+        //не работает
         m_draft.ClockwiseRotation(Physics.MIN_ROTATE_ANGLE);
         SimpleMotion();
     }
     
     private void MinCounterClockwiseRotation(){
+        //не работает
         m_draft.CounterClockwiseRotation(Physics.MIN_ROTATE_ANGLE);
         SimpleMotion();
     }
     
     private void Acceleration(){    //simple acceleration. Change coordinates and increase speed
-        m_draft.setX(m_draft.X()*(1 + Physics.ACCELERATION/10));
-        m_draft.setY(m_draft.Y()*(1 + Physics.ACCELERATION/10));
+        //не работает
+        if(m_draft.X() == 0 && m_draft.Y() == 0){
+            m_draft.setX(0.5f);
+            m_draft.setY(0);
+        }
+        else{
+            m_draft.setX(m_draft.X() + m_draft.X()/Physics.ACCELERATION);
+            m_draft.setY(m_draft.Y() + m_draft.Y()/Physics.ACCELERATION);
+        }
+        //m_velocity.setX(m_draft.X()+10);
         SimpleMotion();
     }
     
     private void Slowdown(){    //simple slowdown. Change coordinatees and decrease speed
-        m_draft.setX(m_draft.X()*(1 - Physics.ACCELERATION/10));
-        m_draft.setY(m_draft.Y()*(1 - Physics.ACCELERATION/10));
+        //не работает
+        m_draft.setX(m_draft.X() - m_draft.X()/Physics.ACCELERATION);
+        m_draft.setY(m_draft.Y() - m_draft.Y()/Physics.ACCELERATION);
+        //m_velocity.setX(m_draft.X()+3);
         SimpleMotion();
     }
     
     private void SimpleMotion(){    //uniform motion along X and accelereted motion along Y
         m_acceleration.setX((m_draft.X() /*+ m_uplifting_force.X()*/)/m_weight);
         m_acceleration.setY((m_draft.Y() /*+ m_uplifting_force.Y() */+ m_gravity.Y())/m_weight);
+        
         m_velocity.setX(m_velocity.X() + m_acceleration.X());
         m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
-        m_coordinates.setX(m_coordinates.getX() + (int)m_velocity.X());
-        m_coordinates.setY(m_coordinates.getY() + (int)m_velocity.Y());
+        if(m_velocity.Length() > 10){
+            m_velocity = m_velocity.getUnitVector();
+            m_velocity.setX(m_velocity.X()*10);
+            m_velocity.setY(m_velocity.Y()*10);
+        }
+        m_coordinates.setX(m_coordinates.getX() + Math.round(m_velocity.X()));
+        m_coordinates.setY(m_coordinates.getY() + Math.round(m_velocity.Y()));
         m_coordinates.setX((m_coordinates.getX() >= 0 )?(m_coordinates.getX()):(Physics.MAX_X + m_coordinates.getX()));
         m_coordinates.setX((m_coordinates.getX() < Physics.MAX_X)?(m_coordinates.getX()):(m_coordinates.getX() - Physics.MAX_X));
-                
+        
         //m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
     }
     

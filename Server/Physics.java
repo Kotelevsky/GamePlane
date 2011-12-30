@@ -12,7 +12,7 @@ public class Physics {
     /** Gravity constant */
     public static int GRAVITY = 1;
     /** Constant that represents minimum acceleration change */
-    public static int ACCELERATION = 2;
+    public static int ACCELERATION = 10;
     /** Minimum angle of object's rotation  */
     public static int MIN_ROTATE_ANGLE = 5;
     /** Maximum X coordinate */
