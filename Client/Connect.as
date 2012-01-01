@@ -1,19 +1,21 @@
-﻿package {
+﻿package   {
 	import flash.system.Security;
 	import flash.net.Socket;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import com.adobe.serialization.json.JSON;
+	import flash.utils.getTimer;
 	
 	
 	public class Connect {
 		private var socket:Socket;
 		private var plane: Array;
-		private var idUser: int;
-		private var idRoom: int;
+		public var idUser: int = -1;
+		public var idRoom: int = -1;
 		private var rooms: Array;
 		private var closeGame: int = 0;
-		
+		private var addr: String = "localhost";
+		private var userName: String = "Player";
 		// когда игра только стартовала
 		
 		private var curX: int;
@@ -21,7 +23,13 @@
 		private var moveX: int;
 		private var moveY: int;
 		
+		public function setUserName(name: String): void {
+			this.userName = name;
+		}
 		
+		public function getUserName(): String {
+			return this.userName;
+		}
 		
 		public function getCurX(): int {
 			return curX;
@@ -35,8 +43,6 @@
 		public function getMoveY(): int {
 			return moveY;
 		}
-		
-		
 		
 		
 		public function getPlane(): Array {
@@ -66,13 +72,25 @@
 		
 		
 		
-		public function Connect(addr: String) {
+		public function Connect() {
 			// constructor code
+			//Security.loadPolicyFile("xmlsocket://"+addr+":843");
+		}
+		
+		public function setAddr(addr: String): void {
+			this.addr = addr;
+		}
+		
+		public function getAddr(): String {
+			return addr;
+		}
+		
+		public function securityStart(): void {
 			Security.loadPolicyFile("xmlsocket://"+addr+":843");
 		}
 		
-		public function StartSocket(adres: String): void{
-			socket = new Socket(adres, 5000);
+		public function StartSocket(): void{
+			socket = new Socket(addr, 5000);
 			socket.addEventListener(Event.CONNECT, onConnectionHandle);
 			socket.addEventListener(ProgressEvent.SOCKET_DATA, onDataHandle);
 		}
@@ -83,25 +101,25 @@
 		
 		//парсеры строк методы
 		private function jsonConnectUser(json: Object):void {
-			var idUser: int = json.id_user;
+			idUser = json.id_user;
 			trace("id user = " + idUser);
-			this.idUser = idUser;
+			//this.idUser = idUser;
 		}
 		
 		//пакет от сервера, когда клиента зашел превый раз в комнату
 		private function jsonRoom(json: Object): void {
-			var idUser: int = json.id_plane;
+			idUser = json.id_plane;
 			trace("id user = " + idUser);
 			//координаты самолета
-			var curX: int = json.coordinate.x;
-			var curY: int = json.coordinate.y;
+			curX = json.coordinate.x;
+			curY = json.coordinate.y;
 			trace("coordinate = ("+curX+","+curY+")");
 			// координаты вектора перемещения
-			var moveX: int = json.move.x;
-			var moveY: int = json.move.y;
+			moveX = json.move.x;
+			moveY = json.move.y;
 			trace("move = ("+moveX+","+moveY+")");
 			// номер комнаты
-			var idRoom: int = json.room;
+			idRoom = json.room;
 			trace("id room = " + idRoom);
 			
 			this.curX = curX;
@@ -133,6 +151,8 @@
 				trace("id plane = " + plane[key].id_plane);
 			}
 			this.plane = plane;
+			this.curX = plane[0].coordinate.x;
+			this.curY = plane[0].coordinate.y;
 		}
 		
 		private function jsonExit():void {
@@ -170,12 +190,14 @@
 		}
 		
 		public function sendPacket(packet: String): void {
+			trace(packet);
 			socket.writeUTFBytes(packet +"\n");
+			socket.flush();
 		}
 		
 		// Connect user
-		public function connectUser(name: String):void {
-			var jsonPacket: String = "{\"packet\":\"connect_user\",\"name\":\""+ name +"\"}";
+		public function connectUser():void {
+			var jsonPacket: String = "{\"packet\":\"connect_user\",\"name\":\""+ userName +"\"}";
 			sendPacket(jsonPacket);
 		}
 		
