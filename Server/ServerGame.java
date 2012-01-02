@@ -204,7 +204,7 @@ public class ServerGame {
         Player player = sendPlayer((int)idUser);
         player.JoinRoom(room);
           
-        GetPacketRoom((int)idRoom, (int)idUser);
+        GetPacketRoom((int)idUser, (int)idRoom);
     }
      
     

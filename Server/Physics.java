@@ -14,7 +14,7 @@ public class Physics {
     /** Constant that represents minimum acceleration change */
     public static int ACCELERATION = 10;
     /** Minimum angle of object's rotation  */
-    public static int MIN_ROTATE_ANGLE = 5;
+    public static int MIN_ROTATE_ANGLE = 6;
     /** Maximum X coordinate */
     public static int MAX_X = 800;
     /** Maximum Y coordinate */

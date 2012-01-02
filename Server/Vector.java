@@ -50,13 +50,15 @@ public class Vector{
     }
     
     public void ClockwiseRotation(double angle){
-        m_x = (float) (m_x*Math.cos(angle) - m_y*Math.sin(angle));
-        m_y = (float) (m_x*Math.sin(angle) + m_y*Math.cos(angle));
+        angle = (angle) * Math.PI / 180;
+        m_x = (float) (m_x*Math.cos(angle) + m_y*Math.sin(angle));
+        m_y = (float) (-m_x*Math.sin(angle) + m_y*Math.cos(angle));
     }
     
     public void CounterClockwiseRotation(double angle){
-        m_x = (float) (m_x*Math.cos(angle) + m_y*Math.sin(angle));
-        m_y = (float) (-m_x*Math.sin(angle) + m_y*Math.cos(angle));
+        angle = (angle) * Math.PI / 180;
+        m_x = (float) (m_x*Math.cos(angle) - m_y*Math.sin(angle));
+        m_y = (float) (m_x*Math.sin(angle) + m_y*Math.cos(angle));
     }
     
 }

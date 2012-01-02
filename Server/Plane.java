@@ -273,6 +273,9 @@ public class Plane extends FlyingObject{
         m_coordinates.setX((m_coordinates.getX() >= 0 )?(m_coordinates.getX()):(Physics.MAX_X + m_coordinates.getX()));
         m_coordinates.setX((m_coordinates.getX() < Physics.MAX_X)?(m_coordinates.getX()):(m_coordinates.getX() - Physics.MAX_X));
         
+        
+        m_coordinates.setY((m_coordinates.getY() >= 0 )?(m_coordinates.getY()):(Physics.MAX_Y + m_coordinates.getY()));
+        m_coordinates.setY((m_coordinates.getY() < Physics.MAX_Y)?(m_coordinates.getY()):(m_coordinates.getY() - Physics.MAX_Y));
         //m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());
     }
     
