@@ -23,6 +23,8 @@ public class Physics {
     public static int PLANE_HEIGT = 25;
     /** Width of plane */
     public static int PLANE_WIDTH = 65;
-    
-    
+    /** Maximum speed of plane*/
+    public static int MAX_SPEED = 15;
+    /** Maximum acceleration of plane*/
+    public static int MAX_ACCELERATION = 5;
 }

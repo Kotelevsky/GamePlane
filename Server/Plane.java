@@ -7,6 +7,7 @@ package planegame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import sun.font.PhysicalFont;
 
 /**
  * The Plane class represents planes on the playing field.
@@ -253,6 +254,10 @@ public class Plane extends FlyingObject{
         //не работает
         m_draft.setX(m_draft.X() - m_draft.X()/Physics.ACCELERATION);
         m_draft.setY(m_draft.Y() - m_draft.Y()/Physics.ACCELERATION);
+        if(m_draft.X() < 0.3 && m_draft.Y() < 0.3){
+            m_draft.setX(0);
+            m_draft.setY(0);
+        }
         //m_velocity.setX(m_draft.X()+3);
         SimpleMotion();
     }
@@ -260,13 +265,18 @@ public class Plane extends FlyingObject{
     private void SimpleMotion(){    //uniform motion along X and accelereted motion along Y
         m_acceleration.setX((m_draft.X() /*+ m_uplifting_force.X()*/)/m_weight);
         m_acceleration.setY((m_draft.Y() /*+ m_uplifting_force.Y() */+ m_gravity.Y())/m_weight);
+        if(m_acceleration.Length() > Physics.MAX_ACCELERATION){
+            m_acceleration = m_acceleration.getUnitVector();
+            m_acceleration.setX(m_acceleration.X()*Physics.MAX_ACCELERATION);
+            m_acceleration.setY(m_acceleration.Y()*Physics.MAX_ACCELERATION);
+        }
         
         m_velocity.setX(m_velocity.X() + m_acceleration.X());
         m_velocity.setY(m_velocity.Y() + m_acceleration.Y());
-        if(m_velocity.Length() > 10){
+        if(m_velocity.Length() > Physics.MAX_SPEED){
             m_velocity = m_velocity.getUnitVector();
-            m_velocity.setX(m_velocity.X()*10);
-            m_velocity.setY(m_velocity.Y()*10);
+            m_velocity.setX(m_velocity.X()*Physics.MAX_SPEED);
+            m_velocity.setY(m_velocity.Y()*Physics.MAX_SPEED);
         }
         m_coordinates.setX(m_coordinates.getX() + Math.round(m_velocity.X()));
         m_coordinates.setY(m_coordinates.getY() + Math.round(m_velocity.Y()));
