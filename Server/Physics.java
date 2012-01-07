@@ -10,7 +10,7 @@ package planegame;
  */
 public class Physics {
     /** Gravity constant */
-    public static int GRAVITY = 1;
+    public static int GRAVITY = 0;
     /** Constant that represents minimum acceleration change */
     public static int ACCELERATION = 10;
     /** Minimum angle of object's rotation  */

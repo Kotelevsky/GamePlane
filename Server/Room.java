@@ -170,4 +170,18 @@ public class Room {
         m_events = map;
     }*/
     
+	public boolean equals(Object obj){
+        if(obj instanceof Room){
+            Room room = (Room)obj;
+            if(room.getID() == this.m_id)
+                return true;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        int hash = 3;
+        hash = 79 * hash + this.m_id;
+        return hash;
+    }
 }

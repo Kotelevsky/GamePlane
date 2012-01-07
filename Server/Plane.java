@@ -7,7 +7,7 @@ package planegame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import sun.font.PhysicalFont;
+
 
 /**
  * The Plane class represents planes on the playing field.
@@ -59,7 +59,7 @@ public class Plane extends FlyingObject{
         m_acceleration = new Vector(0, 0);
         m_draft = new Vector(0, 0);
 //        m_uplifting_force = new Vector(0, 0);
-        m_gravity = new Vector(0, 0);
+        m_gravity = new Vector(0, -Physics.GRAVITY);
         m_weight = 1;
         m_is_alive = true;
     }
@@ -135,7 +135,10 @@ public class Plane extends FlyingObject{
                 break;
             }
             case 3:{
-                m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), m_velocity, this));
+				Vector bulletVelocity = m_velocity.getUnitVector();
+                bulletVelocity.setX(bulletVelocity.X()*Physics.MAX_SPEED);
+                bulletVelocity.setY(bulletVelocity.Y()*Physics.MAX_SPEED);
+                m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), bulletVelocity, this));
             } 
             case 5:{
                 System.out.println("slowdown");
@@ -151,8 +154,8 @@ public class Plane extends FlyingObject{
         System.out.println("Event = " + event + " x = " + this.getX() + " y = " + this.getY() + " DraftX = " + this.m_draft.X() + 
                 " DraftY = " +  this.m_draft.Y() + " AccX = " + this.m_acceleration.X() + " AccY = " + this.m_acceleration.Y() + 
                 " velocityX = " + this.m_velocity.X() + " velocityY + " + this.m_velocity.Y());
-        //if(Bump())
-        //    m_is_alive = false;
+        if(Bump())
+            m_is_alive = false;
     }
     
     public Room getRoom(){
@@ -201,7 +204,7 @@ public class Plane extends FlyingObject{
     private boolean Bump(){
         for(Plane p : m_room.getPlanes()){
             if(Math.sqrt((this.getX() - p.getX())*(this.getX() - p.getX()) + (this.getY() - p.getY())*(this.getY() - p.getY())) <= m_r ){
-                List<Interval> my_sides = GetSides(m_velocity, m_coordinates);
+                /*List<Interval> my_sides = GetSides(m_velocity, m_coordinates);
                 List<Interval> enemy_sides = GetSides(p.getDirectionVector(),p.getCoordinates());
                 for(Interval my : my_sides){
                     for(Interval en : enemy_sides){
@@ -209,10 +212,18 @@ public class Plane extends FlyingObject{
                         if(f)
                             return true;
                     }
-                }
+					
+                }*/
+				return true;
             }
             return false;
         }
+		for(Bullet b : m_room.getBullets()){
+            if(Math.sqrt((this.getX() - b.getX())*(this.getX() - b.getX()) + (this.getY() - b.getY())*(this.getY() - b.getY())) <= m_r){
+                b.NewFrag(this);
+                return true;
+            }
+		}
         return false;
     }
     
@@ -278,8 +289,6 @@ public class Plane extends FlyingObject{
         m_coordinates.setY(m_coordinates.getY() + Math.round(m_velocity.Y()));
         m_coordinates.setX((m_coordinates.getX() >= 0 )?(m_coordinates.getX()):(Physics.MAX_X + m_coordinates.getX()));
         m_coordinates.setX((m_coordinates.getX() < Physics.MAX_X)?(m_coordinates.getX()):(m_coordinates.getX() - Physics.MAX_X));
-        
-        
         m_coordinates.setY((m_coordinates.getY() >= 0 )?(m_coordinates.getY()):(Physics.MAX_Y + m_coordinates.getY()));
         m_coordinates.setY((m_coordinates.getY() < Physics.MAX_Y)?(m_coordinates.getY()):(m_coordinates.getY() - Physics.MAX_Y));
         //m_uplifting_force.setY(m_velocity.X()*m_velocity.X()/m_velocity.Length());

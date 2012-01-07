@@ -43,7 +43,7 @@ public class Bullet extends FlyingObject{
      * 
      * @return The X coordinate of bullet.
      */
-        public int getX(){
+    public int getX(){
         return m_coordinates.getX();
     }
     
@@ -69,4 +69,9 @@ public class Bullet extends FlyingObject{
         return m_is_alive;
     }
     
+    public void NewFrag(Plane p){
+        m_plane.NewFrag(p);
+        m_is_alive = false;
+    }
+   
 }
