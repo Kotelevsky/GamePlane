@@ -226,6 +226,9 @@ public class ServerGame {
         JSONObject packet = new JSONObject();
         packet.put("packet", "action_client");
         List<Plane> plane = roomsGame.get(sendIdRoom(idRoom)).getPlanes();
+        List<Bullet> bullet = roomsGame.get(sendIdRoom(idRoom)).getBullets();
+        
+        
         JSONArray planePacket = new JSONArray();
         for(int i = 0; i < plane.size(); i++) {
             JSONObject planeOrder = new JSONObject();
@@ -239,11 +242,43 @@ public class ServerGame {
             move.put("y", new Integer((int)plane.get(i).getDirectionVector().Y()));
             planeOrder.put("coordinate", coordinate);
             planeOrder.put("move", move);
-            planeOrder.put("flag", 1);// спросить Влада
+            
+            int flag_live = 1;
+            if(!plane.get(i).IsAlive()){
+                flag_live = 0;
+            }
+            
+            planeOrder.put("flag", new Integer(flag_live));// спросить Влада
             planeOrder.put("id_plane", new Integer(plane.get(i).getPlayer().getID()));
             planePacket.add(planeOrder);
         }
+        
+        JSONArray bulletPacket = new JSONArray();
+        for(int i = 0; i < bullet.size(); i++) {
+            JSONObject bulletOrder = new JSONObject();
+            
+            JSONObject coordinate = new JSONObject();
+            coordinate.put("x", new Integer(bullet.get(i).getX()));
+            coordinate.put("y", new Integer(bullet.get(i).getY()));
+            
+            JSONObject move = new JSONObject();
+            move.put("x", new Integer((int)bullet.get(i).getDirectionVector().X()));
+            move.put("y", new Integer((int)bullet.get(i).getDirectionVector().Y()));
+            bulletOrder.put("coordinate", coordinate);
+            bulletOrder.put("move", move);
+            
+            int flag_live = 1;
+            if(!bullet.get(i).IsAlive()){
+                flag_live = 0;
+            }
+            
+            bulletOrder.put("flag", new Integer(flag_live));// спросить Влада
+            bulletOrder.put("id_plane", new Integer(plane.get(i).getPlayer().getID()));
+            planePacket.add(bulletOrder);
+        }
+        
         packet.put("plane", planePacket);
+        packet.put("bullet", bulletPacket);
         String jsonPacket = JSONValue.toJSONString(packet);
         send(idUser, jsonPacket);
     }
