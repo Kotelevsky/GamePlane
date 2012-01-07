@@ -135,7 +135,7 @@ public class Plane extends FlyingObject{
                 break;
             }
             case 3:{
-				Vector bulletVelocity = m_velocity.getUnitVector();
+                Vector bulletVelocity = m_velocity.getUnitVector();
                 bulletVelocity.setX(bulletVelocity.X()*Physics.MAX_SPEED);
                 bulletVelocity.setY(bulletVelocity.Y()*Physics.MAX_SPEED);
                 m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), bulletVelocity, this));
@@ -203,7 +203,7 @@ public class Plane extends FlyingObject{
     
     private boolean Bump(){
         for(Plane p : m_room.getPlanes()){
-            if(Math.sqrt((this.getX() - p.getX())*(this.getX() - p.getX()) + (this.getY() - p.getY())*(this.getY() - p.getY())) <= m_r ){
+            if(Math.sqrt((this.getX() - p.getX())*(this.getX() - p.getX()) + (this.getY() - p.getY())*(this.getY() - p.getY())) <= m_r*2 ){
                 /*List<Interval> my_sides = GetSides(m_velocity, m_coordinates);
                 List<Interval> enemy_sides = GetSides(p.getDirectionVector(),p.getCoordinates());
                 for(Interval my : my_sides){
@@ -214,17 +214,17 @@ public class Plane extends FlyingObject{
                     }
 					
                 }*/
-				return true;
+                return false;
             }
-            return false;
+            return true;
         }
-		for(Bullet b : m_room.getBullets()){
+	for(Bullet b : m_room.getBullets()){
             if(Math.sqrt((this.getX() - b.getX())*(this.getX() - b.getX()) + (this.getY() - b.getY())*(this.getY() - b.getY())) <= m_r){
                 b.NewFrag(this);
-                return true;
+                return false;
             }
-		}
-        return false;
+	}
+        return true;
     }
     
     public void NewFrag(Plane p){
@@ -285,6 +285,7 @@ public class Plane extends FlyingObject{
             m_velocity.setX(m_velocity.X()*Physics.MAX_SPEED);
             m_velocity.setY(m_velocity.Y()*Physics.MAX_SPEED);
         }
+        
         m_coordinates.setX(m_coordinates.getX() + Math.round(m_velocity.X()));
         m_coordinates.setY(m_coordinates.getY() + Math.round(m_velocity.Y()));
         m_coordinates.setX((m_coordinates.getX() >= 0 )?(m_coordinates.getX()):(Physics.MAX_X + m_coordinates.getX()));
