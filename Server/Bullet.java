@@ -15,7 +15,7 @@ public class Bullet extends FlyingObject{
     
     /** Reference to plane owner */
     private Plane m_plane;
-    
+    private boolean m_is_alive;
     /**
      * Create an instance of Bullet class 
      * @param x The X coordinate of bullet
@@ -26,6 +26,7 @@ public class Bullet extends FlyingObject{
     public Bullet(int x, int y, Vector vector, Plane p){
         super(x, y, vector);
         m_plane = p;
+        m_is_alive = true;
     }
     
     /**
@@ -62,6 +63,10 @@ public class Bullet extends FlyingObject{
     @Override
     public Vector getDirectionVector(){
         return new Vector(m_velocity.X(), -m_velocity.Y());
+    }
+    
+    public boolean IsAlive(){
+        return m_is_alive;
     }
     
 }

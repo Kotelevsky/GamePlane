@@ -61,4 +61,18 @@ public class Vector{
         m_y = (float) (m_x*Math.sin(angle) + m_y*Math.cos(angle));
     }
     
+    public boolean equals(Object obj){
+        if(obj instanceof Vector){
+            Vector vec = (Vector)obj;
+            if((int)vec.X() == (int)m_x && (int)vec.Y() == (int)m_y)
+                return true;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        int hash = 7;
+        return (int)m_x + (int)m_y + hash;
+    }
+    
 }

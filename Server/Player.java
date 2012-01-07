@@ -73,4 +73,19 @@ public class Player {
        m_room = null;
     }
     
+    public boolean equals(Object obj){
+        if(obj instanceof Player){
+            Player pla = (Player)obj;
+            if(pla.getID() == this.m_id)
+                return true;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.m_id;
+        return hash;
+    }
+    
 }

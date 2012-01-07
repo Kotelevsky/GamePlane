@@ -88,14 +88,10 @@ public class Plane extends FlyingObject{
     //@Override
     public boolean equals(Object obj){
         if(obj instanceof Plane){
-            Plane p = (Plane)obj;
-            /*if(obj == null)
-                return false;
-            if(obj == this)
-                return true;*/          
-            if(p.getX() == m_coordinates.getX() && p.getY() == m_coordinates.getY() /*&& p.getDirectionVector().X() == this.getDirectionVector().X() 
+            Plane p = (Plane)obj;        
+            if(p.getX() == m_coordinates.getX() && p.getY() == m_coordinates.getY() && p.getDirectionVector().X() == this.getDirectionVector().X() 
                     && p.getDirectionVector().Y() == this.getDirectionVector().Y() && p.m_draft.X() == this.m_draft.X()
-                    && p.m_draft.Y() == this.m_draft.Y()*/)
+                    && p.m_draft.Y() == this.m_draft.Y())
                 return true;
         }
         else

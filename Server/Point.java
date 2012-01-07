@@ -33,4 +33,18 @@ public class Point {
         m_y = y;
     }
     
+    public boolean equals(Object obj){
+        if(obj instanceof Point){
+            Point p = (Point)obj;
+            if(p.getX() == m_x && p.getY() == m_y)
+                return true;
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        int hash = 7;
+        return m_x + m_y + hash;
+    }
+    
 }
