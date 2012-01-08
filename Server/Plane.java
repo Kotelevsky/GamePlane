@@ -116,7 +116,9 @@ public class Plane extends FlyingObject{
            ResetPlane();
            m_is_alive = !m_is_alive;
         }
-        int event = events.get(m_id);
+        int event = 0;
+        if((events != null) || (events.containsKey(m_id)))
+            event = events.get(m_id);
                 
         switch(event){
             case 4:{
@@ -135,10 +137,11 @@ public class Plane extends FlyingObject{
                 break;
             }
             case 3:{
-                Vector bulletVelocity = m_velocity.getUnitVector();
+                Vector bulletVelocity = m_velocity.getUnitVector().Clone();
                 bulletVelocity.setX(bulletVelocity.X()*Physics.MAX_SPEED);
                 bulletVelocity.setY(bulletVelocity.Y()*Physics.MAX_SPEED);
                 m_room.AddBullet(new Bullet(m_coordinates.getX(), m_coordinates.getY(), bulletVelocity, this));
+                break;
             } 
             case 5:{
                 System.out.println("slowdown");
@@ -244,16 +247,22 @@ public class Plane extends FlyingObject{
     }
     
     private void Acceleration(){    //simple acceleration. Change coordinates and increase speed
-        //не работает
-        if(m_draft.X() == 0 && m_draft.Y() == 0){
-            m_draft.setX(0.5f);
-            m_draft.setY(0);
+        if(m_draft.Length() > Physics.MAX_SPEED){
+            m_draft = m_draft.getUnitVector();
+            m_draft.setX(m_draft.X()*Physics.MAX_SPEED);
+            m_draft.setY(m_draft.Y()*Physics.MAX_SPEED);
         }
         else{
-            m_draft.setX(m_draft.X() + m_draft.X()/Physics.ACCELERATION);
-            m_draft.setY(m_draft.Y() + m_draft.Y()/Physics.ACCELERATION);
+            if(m_draft.X() == 0 && m_draft.Y() == 0){
+                m_draft.setX(0.5f);
+                m_draft.setY(0);
+            }
+            else{
+                m_draft.setX(m_draft.X() + m_draft.X()/Physics.ACCELERATION);
+                m_draft.setY(m_draft.Y() + m_draft.Y()/Physics.ACCELERATION);
+            }
         }
-        //m_velocity.setX(m_draft.X()+10);
+        
         SimpleMotion();
     }
     
@@ -264,6 +273,8 @@ public class Plane extends FlyingObject{
         if(m_draft.X() < 0.3 && m_draft.Y() < 0.3){
             m_draft.setX(0);
             m_draft.setY(0);
+            m_velocity.setX(m_velocity.X() - m_velocity.X()/Physics.ACCELERATION);
+            m_velocity.setY(m_velocity.Y() - m_velocity.Y()/Physics.ACCELERATION);
         }
         //m_velocity.setX(m_draft.X()+3);
         SimpleMotion();

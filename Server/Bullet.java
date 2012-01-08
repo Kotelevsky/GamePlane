@@ -35,8 +35,10 @@ public class Bullet extends FlyingObject{
      */
     @Override
     public void Compute(HashMap<Integer, Integer>  events){
-        m_coordinates.setX(m_coordinates.getX() + (int)m_velocity.X());
-        m_coordinates.setY(m_coordinates.getY() + (int)m_velocity.Y());
+        m_coordinates.setX(m_coordinates.getX() + Math.round(m_velocity.X()));
+        m_coordinates.setY(m_coordinates.getY() + Math.round(m_velocity.Y()));
+        if((m_coordinates.getX() < 0 ) || (m_coordinates.getX() > Physics.MAX_X) || (m_coordinates.getY() < 0 ) || (m_coordinates.getY() > Physics.MAX_Y))
+                m_is_alive = false;
     }
     
     /**

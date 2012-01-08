@@ -6,6 +6,7 @@ package planegame;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Room {
     private ActionListener m_alistner;
     private HashMap<Integer, Integer> m_events;
     private String m_name;
+    private List<FlyingObject> m_bullets;
     
     /**
      * Create instance of Room
@@ -37,8 +39,9 @@ public class Room {
     public Room(int max_players, String name){
         m_name = name;
         m_max_player_count = max_players;
-        m_objects = new ArrayList<FlyingObject>();
-        m_events = new HashMap<Integer, Integer>();
+        m_objects = new ArrayList();
+        m_events = new HashMap<>();
+        m_bullets = new ArrayList<>();
         m_alistner = new ActionListener() {
 
             @Override
@@ -47,7 +50,7 @@ public class Room {
                     GameTick();
                 }
                 catch(Exception ex){
-                    
+                    System.out.println(ex.getMessage());
                 }
                 //throw new UnsupportedOperationException("Not supported yet.");
             }
@@ -138,13 +141,21 @@ public class Room {
      * @throws Exception 
      */
     private void GameTick() throws Exception{
-        for(FlyingObject f : m_objects){
-            f.Compute(m_events);
+        try{
+            for(FlyingObject f : m_objects){
+                f.Compute(m_events);
+            }
         }
-        
+        catch(Exception e){
+            //System.out.println(e.getMessage());
+        }
+        if(!m_bullets.isEmpty()){
+            m_objects.addAll(m_bullets);
+            m_bullets = new ArrayList<>();
+        }
         m_events = new HashMap<>();
     }
- 
+    
     public void DisconnectPlayer(int id){
         for(FlyingObject f : m_objects){
                 if(f instanceof Plane){ 
@@ -157,7 +168,7 @@ public class Room {
     }
     
     public void AddBullet(Bullet b){
-        m_objects.add(b);
+        m_bullets.add(b);
     }
     
     /*private void SetDefaultEvents(){
