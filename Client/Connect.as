@@ -139,7 +139,7 @@
 				trace("id count = " + rooms[key].count);
 				trace("curent users = " + rooms[key].curent);
             }
-			this.rooms = rooms;
+			if(rooms.length != 0) this.rooms = rooms;
 		}
 		
 		private function jsonActionClient(json: Object):void{
