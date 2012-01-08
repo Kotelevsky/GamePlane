@@ -35,7 +35,10 @@ public abstract class FlyingObject {
     }
     
     public FlyingObject(int x, int y, Vector vec){
-        m_coordinates = new Point(x, y);
+        if((x > 0) && (x < Physics.MAX_X) && (y > 0) && (y < Physics.MAX_Y))
+            m_coordinates = new Point(x, y);
+        else
+            m_coordinates = new Point(Physics.PLANE_WIDTH, Physics.PLANE_HEIGT);
         m_velocity = vec.Clone();
         
     }

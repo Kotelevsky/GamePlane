@@ -100,7 +100,7 @@ public class Room {
      * @return true if operation successful, false if not
      */
     public boolean AddPlayer(Player p){
-        if(!(m_objects.size() == m_max_player_count)){
+        if(!(getPlanes().size() == m_max_player_count)){
             Plane plane = new Plane(0, 0, new Vector(0, 0), p, this); //поставить тройку
             p.setPlane(plane);
             m_objects.add(p.getPlane());
@@ -170,7 +170,7 @@ public class Room {
         m_events = map;
     }*/
     
-	public boolean equals(Object obj){
+    public boolean equals(Object obj){
         if(obj instanceof Room){
             Room room = (Room)obj;
             if(room.getID() == this.m_id)
